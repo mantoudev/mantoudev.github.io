@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Kerberos, 大数据安全,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="MantouDev" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="1.背景互联网从来就不是一个安全的地方。很多时候我们过分依赖防火墙来解决安全的问题，不幸的是，防火墙是假设“坏人”是来自外部的，而真正具有破坏性的攻击事件都是往往都是来自于内部的。 近几年，在thehackernews等网站上总会时不时的看到可以看到一些因为数据安全问题被大面积攻击、勒索的事件。在Hadoop1.0.0之前，Hadoop并不提供对安全的支持，默认集群内所有角色都是可靠的。用户访问时">
+<meta name="keywords" content="Kerberos, 大数据安全">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[大数据安全]基于Kerberos的大数据安全方案">
+<meta property="og:url" content="http://mantoudev.com/2018/11/26/大数据安全-基于Kerberos的大数据安全方案/index.html">
+<meta property="og:site_name" content="MantouDev">
+<meta property="og:description" content="1.背景互联网从来就不是一个安全的地方。很多时候我们过分依赖防火墙来解决安全的问题，不幸的是，防火墙是假设“坏人”是来自外部的，而真正具有破坏性的攻击事件都是往往都是来自于内部的。 近几年，在thehackernews等网站上总会时不时的看到可以看到一些因为数据安全问题被大面积攻击、勒索的事件。在Hadoop1.0.0之前，Hadoop并不提供对安全的支持，默认集群内所有角色都是可靠的。用户访问时">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s1.ax1x.com/2018/11/03/i4WMu9.png">
+<meta property="og:image" content="https://s1.ax2x.com/2018/10/30/5XI5Nu.png">
+<meta property="og:image" content="https://s1.ax2x.com/2018/10/30/5XIYmr.png">
+<meta property="og:image" content="https://s1.ax2x.com/2018/10/30/5XIziR.png">
+<meta property="og:image" content="https://s1.ax1x.com/2018/11/03/i4TRJI.png">
+<meta property="og:image" content="https://s1.ax1x.com/2018/11/03/i4H9jf.png">
+<meta property="og:updated_time" content="2018-11-26T14:48:52.441Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[大数据安全]基于Kerberos的大数据安全方案">
+<meta name="twitter:description" content="1.背景互联网从来就不是一个安全的地方。很多时候我们过分依赖防火墙来解决安全的问题，不幸的是，防火墙是假设“坏人”是来自外部的，而真正具有破坏性的攻击事件都是往往都是来自于内部的。 近几年，在thehackernews等网站上总会时不时的看到可以看到一些因为数据安全问题被大面积攻击、勒索的事件。在Hadoop1.0.0之前，Hadoop并不提供对安全的支持，默认集群内所有角色都是可靠的。用户访问时">
+<meta name="twitter:image" content="https://s1.ax1x.com/2018/11/03/i4WMu9.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://mantoudev.com/2018/11/26/大数据安全-基于Kerberos的大数据安全方案/">
+
+
+
+
+
+  <title>[大数据安全]基于Kerberos的大数据安全方案 | MantouDev</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">MantouDev</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://mantoudev.com/2018/11/26/大数据安全-基于Kerberos的大数据安全方案/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="mantou">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MantouDev">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[大数据安全]基于Kerberos的大数据安全方案</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-26T21:39:40+08:00">
+                2018-11-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/BigData-Auth/" itemprop="url" rel="index">
+                    <span itemprop="name">BigData, Auth</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="1-背景"><a href="#1-背景" class="headerlink" title="1.背景"></a>1.背景</h3><p>互联网从来就不是一个安全的地方。很多时候我们过分依赖防火墙来解决安全的问题，不幸的是，防火墙是假设“坏人”是来自外部的，而真正具有破坏性的攻击事件都是往往都是来自于内部的。</p>
+<p>近几年，在<code>thehackernews</code>等网站上总会时不时的看到可以看到一些因为数据安全问题被大面积攻击、勒索的事件。在Hadoop1.0.0之前，Hadoop并不提供对安全的支持，默认集群内所有角色都是可靠的。用户访问时不需要进行任何验证,++导致++恶意用户很容易就可以伪装进入集群进行破坏。<br><a id="more"></a></p>
+<p><img src="https://s1.ax1x.com/2018/11/03/i4WMu9.png" alt="不安全的Hadoop集群"></p>
+<p>要保证Hadoop集群的安全，至少要做到2个A：<code>Authentication</code>(认证)，<code>Authorization</code>(授权)。常见的方案有：</p>
+<ul>
+<li><strong>Authentication</strong>：<br>MIT Kerberos, Azure AD, Kerby</li>
+<li><strong>Authorization</strong>：<br>Apache Sentry(Cloudera), Apache Ranger(Hortonworks)</li>
+</ul>
+<p><img src="https://s1.ax2x.com/2018/10/30/5XI5Nu.png" alt="Hadoop Cluster Secure"></p>
+<h5 id="Hadoop集群对Kerberos的支持"><a href="#Hadoop集群对Kerberos的支持" class="headerlink" title="Hadoop集群对Kerberos的支持"></a>Hadoop集群对Kerberos的支持</h5><p>2012年1.0.0版本正式发布后，Hadoop才增加了对Kerberos的支持, 使得集群中的节点是可信任的。</p>
+<p>Kerberos可以将认证的密钥在集群部署时事先放到可靠的节点上。集群运行时，集群内的节点使用密钥得到认证，认证通过后的节点才能提供服务。企图冒充的节点由于没有事先得到的密钥信息，无法与集群内部的节点通信。这样就防止了恶意地使用或篡改Hadoop集群的问题，确保了Hadoop集群的可靠性、安全性。</p>
+<h3 id="2-Kerberos介绍"><a href="#2-Kerberos介绍" class="headerlink" title="2.Kerberos介绍"></a>2.Kerberos介绍</h3><p>Kerberos是种网络身份验证协议,最初设计是用来保护雅典娜工程的网络服务器。Kerberos这个名字源于希腊神话，是一只三头犬的名字，它旨在通过使用密钥加密技术为Client/Server序提供强身份验证。可以用于防止窃听、防止重放攻击、保护数据完整性等场合，是一种应用对称密钥体制进行密钥管理的系统。Kerberos的扩展产品也使用公开密钥加密方法进行认证。</p>
+<p>Kerberos目前最新版本是5，1~3版本只在MIT内部发行，因为使用DES加密，早期被美国出口管制局列为军需品禁止出口，直到瑞典皇家工学院实现了Kerberos版本4，KTH-KRB。后续也是这个团队实现了版本5: Heimdal，目前常见的Kerberos5实现之一。</p>
+<p>本文中讨论的Kerberos5实现版本为MIT Kerberos，MIT保持的大约半年左右一次的更新速度，目前最新版本是2018-11-01发布的1.16.2版本。</p>
+<h4 id="2-1-名词解释"><a href="#2-1-名词解释" class="headerlink" title="2.1 名词解释"></a>2.1 名词解释</h4><ul>
+<li>AS（Authentication Server）：认证服务器</li>
+<li>KDC（Key Distribution Center）：密钥分发中心</li>
+<li>TGT（Ticket Granting Ticket）：票据授权票据，票据的票据</li>
+<li>TGS（Ticket Granting Server）：票据授权服务器</li>
+<li>SS（Service Server）：特定服务提供端</li>
+<li>Principal：被认证的个体</li>
+<li>Ticket：票据，客户端用来证明身份真实性。包含：用户名，IP，时间戳，有效期，会话秘钥。</li>
+</ul>
+<p>使用Kerberos时，一个客户端需要经过三个步骤来获取服务:</p>
+<ol>
+<li><code>认证</code>: 客户端向认证服务器发送一条报文，获取一个包含时间戳的TGT。  </li>
+<li><code>授权</code>: 客户端使用TGT向TGS请求指定Service的Ticket。</li>
+<li><code>服务请求</code>:   客户端向指定的Service出示服务Ticket鉴权通讯。</li>
+</ol>
+<p>Kerberos协议在网络通信协定中属于显示层。其通信流程简单地说，用户先用共享密钥从某认证服务器得到一个身份证明。随后，用户使用这个身份证明与SS通信，而不使用共享密钥。</p>
+<h4 id="2-2-具体通信流程"><a href="#2-2-具体通信流程" class="headerlink" title="2.2 具体通信流程"></a>2.2 具体通信流程</h4><blockquote>
+<p>①此流程使用了对称加密; ②此流程发生在某一个Kerberos领域中； ③小写字母c,d,e,g是客户端发出的消息，大写字母A,B,E,F,H是各个服务器发回的消息。</p>
+</blockquote>
+<p>首先，用户使用客户端上的程序进行登录：</p>
+<ol>
+<li>输入用户ID和密码到客户端（或使用keytab登录）。</li>
+<li>客户端程序运行一个单向函数（大多数为Hash）把密码转换成密钥，这个就是客户端的“用户密钥”(user’s secret key)。</li>
+</ol>
+<h5 id="2-2-1-客户端认证（Kinit）"><a href="#2-2-1-客户端认证（Kinit）" class="headerlink" title="2.2.1 客户端认证（Kinit）"></a>2.2.1 客户端认证（Kinit）</h5><p>客户端(Client)从认证服务器(AS)获取票据的票据（TGT）。<br><img src="https://s1.ax2x.com/2018/10/30/5XIYmr.png" alt="客户端认证"></p>
+<ol>
+<li><p>Client向AS发送1条明文消息，申请基于该用户所应享有的服务，例如“用户Sunny想请求服务”（Sunny是用户ID）。（注意：用户不向AS发送“用户密钥”(user’s secret key)，也不发送密码）该AS能够从本地数据库中查询到该申请用户的密码，并通过相同途径转换成相同的“用户密钥”(user’s secret key)。</p>
+</li>
+<li><p>AS检查该用户ID是否在于本地数据库中，如果用户存在则返回2条消息：</p>
+<ul>
+<li>【消息A】：<strong>Client/TGS会话密钥(Client/TGS Session Key)</strong>（该Session Key用在将来Client与TGS的通信（会话）上），通过 <strong>用户密钥(user’s secret key)</strong> 进行加密。</li>
+<li>【消息B】：<strong>票据授权票据(TGT)</strong>（TGT包括：消息A中的“Client/TGS会话密钥”(Client/TGS Session Key)，用户ID，用户网址，TGT有效期），通过<strong>TGS密钥(TGS’s secret key)</strong> 进行加密。</li>
+</ul>
+</li>
+<li><p>一旦Client收到消息A和消息B，Client首先尝试用自己的“用户密钥”(user’s secret key)解密消息A，如果用户输入的密码与AS数据库中的密码不符，则不能成功解密消息A。输入正确的密码并通过随之生成的”user’s secret key”才能解密消息A，从而得到“Client/TGS会话密钥”(Client/TGS Session Key)。（注意：Client不能解密消息B，因为B是用TGS密钥(TGS’s secret key)加密的）。拥有了“Client/TGS会话密钥”(Client/TGS Session Key)，Client就足以通过TGS进行认证了。</p>
+</li>
+</ol>
+<h5 id="2-2-2-服务授权"><a href="#2-2-2-服务授权" class="headerlink" title="2.2.2 服务授权"></a>2.2.2 服务授权</h5><blockquote>
+<p>Client从TGS获取票据(client-to-server ticket)。</p>
+</blockquote>
+<p><img src="https://s1.ax2x.com/2018/10/30/5XIziR.png" alt="服务授权"></p>
+<ol>
+<li><p>当client需要申请特定服务时，其向TGS发送以下2条消息：</p>
+<ul>
+<li>【消息c】：即消息B的内容（TGS’s secret key加密后的TGT），和想获取的服务的服务ID（注意：不是用户ID）。</li>
+<li>【消息d】：<strong>认证符(Authenticator)</strong>（Authenticator包括：用户ID，时间戳），通过<strong>Client/TGS会话密钥(Client/TGS Session Key)</strong>进行加密。</li>
+</ul>
+</li>
+<li><p>收到消息c和消息d后，TGS首先检查KDC数据库中是否存在所需的服务，查找到之后，TGS用自己的“TGS密钥”(TGS’s secret key)解密消息c中的消息B（也就是TGT），从而得到之前生成的“Client/TGS会话密钥”(Client/TGS Session Key)。TGS再用这个Session Key解密消息d得到包含用户ID和时间戳的Authenticator，并对TGT和Authenticator进行验证，验证通过之后返回2条消息：</p>
+<ul>
+<li>【消息E】：<strong>client-server票据(client-to-server ticket)</strong>（该ticket包括：Client/SS会话密钥 (Client/Server Session Key），用户ID，用户网址，有效期），通过提供该服务的<strong>服务器密钥(service’s secret key)</strong> 进行加密。</li>
+<li>【消息F】：<strong>Client/SS会话密钥( Client/Server Session Key)</strong> （该Session Key用在将来Client与Server Service的通信（会话）上），通过<strong>Client/TGS会话密钥(Client/TGS Session Key)</strong> 进行加密。</li>
+</ul>
+</li>
+<li><p>Client收到这些消息后，用“Client/TGS会话密钥”(Client/TGS Session Key)解密消息F，得到“Client/SS会话密钥”(Client/Server Session Key)。（注意：Client不能解密消息E，因为E是用“服务器密钥”(service’s secret key)加密的）。</p>
+</li>
+</ol>
+<h5 id="2-2-3-服务请求"><a href="#2-2-3-服务请求" class="headerlink" title="2.2.3 服务请求"></a>2.2.3 服务请求</h5><blockquote>
+<p>Client从SS获取服务。</p>
+</blockquote>
+<ol>
+<li>当获得“Client/SS会话密钥”(Client/Server Session Key)之后，Client就能够使用服务器提供的服务了。Client向指定服务器SS发出2条消息：<ul>
+<li>【消息e】：即上一步中的消息E“client-server票据”(client-to-server ticket)，通过<strong>服务器密钥(service’s secret key)</strong> 进行加密</li>
+<li>【消息g】：新的<strong>Authenticator</strong>（包括：用户ID，时间戳），通过<strong>Client/SS会话密钥(Client/Server Session Key)</strong> 进行加密</li>
+</ul>
+</li>
+<li><p>SS用自己的密钥(service’s secret key)解密消息e从而得到TGS提供的Client/SS会话密钥(Client/Server Session Key)。再用这个会话密钥解密消息g得到Authenticator，（同TGS一样）对Ticket和Authenticator进行验证，验证通过则返回1条消息（确认函：确证身份真实，乐于提供服务）。</p>
+<ul>
+<li>【消息H】：<strong>新时间戳</strong>（新时间戳是：Client发送的时间戳加1，v5已经取消这一做法），通过<strong>Client/SS会话密钥(Client/Server Session Key)</strong> 进行加密。</li>
+</ul>
+</li>
+<li><p>Client通过Client/SS会话密钥(Client/Server Session Key)解密消息H，得到新时间戳并验证其是否正确。验证通过的话则客户端可以信赖服务器，并向服务器（SS）发送服务请求。</p>
+</li>
+<li><p>服务器（SS）向客户端提供相应的服务。</p>
+</li>
+</ol>
+<h3 id="3-Kerberos-HA架构"><a href="#3-Kerberos-HA架构" class="headerlink" title="3.Kerberos HA架构"></a>3.Kerberos HA架构</h3><p>Kerberos支持两种服务器在域内冗余方式：<code>Master/Slave</code>（MIT和Heimdal）和<code>Multimaster</code>结构（Windows Active Directory）。在生产环境中部署Kerberos时，最好使用一主(Master)多从(Slave)的架构，以确保Kerberos服务的高可用性。</p>
+<p>Kerberos中每个KDC都包含数据库的副本。主KDC包含域（Realm）数据库的<strong>可写副本</strong>，它以固定的时间间隔复制到从KDC中。所有数据库更改（例如密码更改）都在主KDC上进行，当主KDC不可用时，从KDC提供Kerberos票据给服务授权，但不提供数据库管理。KDC需要一个Admin来进行日常的管理操作。</p>
+<p>Kerberos的同步机制只复制主数据库的内容，但不传递配置文件，以下文件必须手动复制到每个Slave中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- krb5.conf</span><br><span class="line">- kdc.conf</span><br><span class="line">- kadm5.acl</span><br><span class="line">- master key stash file</span><br></pre></td></tr></table></figure></p>
+<h4 id="3-1-HA方案"><a href="#3-1-HA方案" class="headerlink" title="3.1 HA方案"></a>3.1 HA方案</h4><p>目前单机房HA方案使用的较多的是Keepalived + Rsync 。Keepalived可以将多个无状态的单点通过虚拟IP(以下称为VIP)漂移的方式搭建成一个高可用服务。</p>
+<p>首先，在Master KDC中创建数据库的dump文件(将当前的Kerberos和KADM5数据库转储为ASCII文件)：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kdb5_util dump [-b7|-ov|-r13] [-verbose] [-mkey_convert] [-new_mkey_file mkey_file] [-rev] [-recurse] [filename [principals...]]</span><br></pre></td></tr></table></figure></p>
+<p>然后使用Rsync将目录同步到Slave机器的对应目录中，<br>再导入KDC中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kdb5_util load [-b7|-ov|-r13] [-hash] [-verbose] [-update] filename [dbname]</span><br></pre></td></tr></table></figure></p>
+<p>Hadoop所有请求通过请求内网域名，解析到Keepalived绑定的VIP的方式来使用KDC:<br><img src="https://s1.ax1x.com/2018/11/03/i4TRJI.png" alt="Kerberos HA"></p>
+<h3 id="4-优化和展望"><a href="#4-优化和展望" class="headerlink" title="4. 优化和展望"></a>4. 优化和展望</h3><h4 id="4-1-优化"><a href="#4-1-优化" class="headerlink" title="4.1 优化"></a>4.1 优化</h4><h6 id="（1）用户（Principal）管理"><a href="#（1）用户（Principal）管理" class="headerlink" title="（1）用户（Principal）管理"></a>（1）用户（Principal）管理</h6><p>如果团队中已经有一套权限系统，要将现有的身份系统集成到Kerberos中会很困难。<br>随着业务的飞速增长，服务器规模越来越大，Kerberos Principal手动操作会越来越频繁，手动的增删改查维护会非常痛苦。需要在Kerberos管理系统中规范Principal申请、维护、删除、keytab生成流程。Principal申请和权限管理自动化。</p>
+<h5 id="（2）数据同步优化"><a href="#（2）数据同步优化" class="headerlink" title="（2）数据同步优化"></a>（2）数据同步优化</h5><p>Kerberos数据同步可以将生成的数据记录同步写入到MySQL中，使用MySQL双主同步方式。在跨机房环境中，KDC数据使用Rsync工具进行增量同步。以A核心机房作为主机房，Rsync Server使用了Keepalived VIP的方式，当Kerberos主机宕机后，VIP漂移到另外一台主机器上，Rsync Client会以VIP所在的KDC主机器为Rsync Server进行数据同步，以保证KDC数据同步的高可用性。</p>
+<h5 id="（3）运维"><a href="#（3）运维" class="headerlink" title="（3）运维"></a>（3）运维</h5><p>使用进程管理工具对Kerberos相关进程进行存活监控，当发现有进程异常退出时，邮件/微信/钉钉报警，主动再次拉起进程。</p>
+<h4 id="4-2-展望"><a href="#4-2-展望" class="headerlink" title="4.2 展望"></a>4.2 展望</h4><p>部署过Kerberos的同学都知道，在Hadoop集群部署Kerberos实际是一项非常繁琐的工作。Kerberos本质上是一种协议或安全通道，对于大多数用户或普通用户来说，是有一定学习曲线的，是否有更好的实现能够对普通用户隐藏这些繁琐的细节。</p>
+<p>阿里和Intel合作项目Hadoop Authentication Service (HAS) 据称目前已经应用到ApsaraDB for HBase2.0中:<br><img src="https://s1.ax1x.com/2018/11/03/i4H9jf.png" alt="HAS"></p>
+<p>HAS方案使用Kerby替代MIT Kerberos服务，利用HAS插件式验证方式建立一套人们习惯的账户密码体系。</p>
+<p>目前HAS在Apache Kerby项目<code>has-project</code>分支开发中，未来会作为Kerbby的新feature出现在下一次release中。</p>
+<p>Apache Kerby作为Apache Directory的一个子项目，目前关注度并不高，让我们期待它在后续的发展吧。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Kerberos-大数据安全/" rel="tag"># Kerberos, 大数据安全</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+  <div id="gitalk-container"></div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="mantou">
+            
+              <p class="site-author-name" itemprop="name">mantou</p>
+              <p class="site-description motion-element" itemprop="description">吭哧吭哧</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-背景"><span class="nav-number">1.</span> <span class="nav-text">1.背景</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Hadoop集群对Kerberos的支持"><span class="nav-number">1.0.1.</span> <span class="nav-text">Hadoop集群对Kerberos的支持</span></a></li></ol></li></ol><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Kerberos介绍"><span class="nav-number">2.</span> <span class="nav-text">2.Kerberos介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-名词解释"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 名词解释</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-具体通信流程"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 具体通信流程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-1-客户端认证（Kinit）"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2.1 客户端认证（Kinit）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-2-服务授权"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2.2 服务授权</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-3-服务请求"><span class="nav-number">2.2.3.</span> <span class="nav-text">2.2.3 服务请求</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Kerberos-HA架构"><span class="nav-number">3.</span> <span class="nav-text">3.Kerberos HA架构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-HA方案"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 HA方案</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-优化和展望"><span class="nav-number">4.</span> <span class="nav-text">4. 优化和展望</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-优化"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 优化</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#（1）用户（Principal）管理"><span class="nav-number">4.1.0.1.</span> <span class="nav-text">（1）用户（Principal）管理</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#（2）数据同步优化"><span class="nav-number">4.1.1.</span> <span class="nav-text">（2）数据同步优化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#（3）运维"><span class="nav-number">4.1.2.</span> <span class="nav-text">（3）运维</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-展望"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 展望</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mantou</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+		var gitalk = new Gitalk({
+		  clientID: '30cbff28d4b30a7b4f1e',
+		  clientSecret: 'ed6f560eb6e7252d23780c2bf4a6f8caa146f066',
+		  repo: 'blog-comments',
+		  owner: 'mantoudev',
+		  admin: ['mantoudev'],
+		  id: location.pathname,
+		  distractionFreeMode: 'true'
+		})
+		gitalk.render('gitalk-container')
+       </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
