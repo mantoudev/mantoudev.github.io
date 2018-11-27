@@ -1032,20 +1032,20 @@
 
 
   <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="/js/md5.js"></script>
   <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
    <script type="text/javascript">
-   <script src="/js/md5.js"></script>
 		var gitalk = new Gitalk({
 		  clientID: '166772c775bb840c4d30',
 		  clientSecret: '705cf1b571902b10c6e103604a718ff2ee1dd108',
 		  repo: 'blog-comments',
 		  owner: 'mantoudev',
 		  admin: ['mantoudev'],
-		  id: md5(location.href),
+		  id: md5(location.path),
 		  distractionFreeMode: 'true'
 		})
 		gitalk.render('gitalk-container')
-       
+       </script>
 
 
 
