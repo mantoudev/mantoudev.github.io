@@ -897,7 +897,7 @@
 		  repo: 'blog-comments',
 		  owner: 'mantoudev',
 		  admin: ['mantoudev'],
-		  id: md5(location.path),
+		  id: md5(location.pathname),
 		  distractionFreeMode: 'true'
 		})
 		gitalk.render('gitalk-container')
