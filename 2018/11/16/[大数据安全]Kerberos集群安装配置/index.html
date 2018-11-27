@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Kerberos,大数据安全,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1. 概述Kerberos是一种计算机网络认证协议，它允许某实体在非安全网络环境下通信，向另一个实体以一种安全的方式证明自己的身份。它也指由麻省理工实现此协议，并发布的一套免费软件。它的设计主要针对客户-服务器模型，并提供了一系列交互认证——用户和服务器都能验证对方的身份。Kerberos协议可以保护网络实体免受窃听和重复攻击。">
+<meta name="keywords" content="Kerberos,大数据安全">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[大数据安全]Kerberos集群安装配置">
+<meta property="og:url" content="http://mantoudev.com/2018/11/16/[大数据安全]Kerberos集群安装配置/index.html">
+<meta property="og:site_name" content="MantouDev">
+<meta property="og:description" content="1. 概述Kerberos是一种计算机网络认证协议，它允许某实体在非安全网络环境下通信，向另一个实体以一种安全的方式证明自己的身份。它也指由麻省理工实现此协议，并发布的一套免费软件。它的设计主要针对客户-服务器模型，并提供了一系列交互认证——用户和服务器都能验证对方的身份。Kerberos协议可以保护网络实体免受窃听和重复攻击。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-27T08:39:38.235Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[大数据安全]Kerberos集群安装配置">
+<meta name="twitter:description" content="1. 概述Kerberos是一种计算机网络认证协议，它允许某实体在非安全网络环境下通信，向另一个实体以一种安全的方式证明自己的身份。它也指由麻省理工实现此协议，并发布的一套免费软件。它的设计主要针对客户-服务器模型，并提供了一系列交互认证——用户和服务器都能验证对方的身份。Kerberos协议可以保护网络实体免受窃听和重复攻击。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://mantoudev.com/2018/11/16/[大数据安全]Kerberos集群安装配置/">
+
+
+
+
+
+  <title>[大数据安全]Kerberos集群安装配置 | MantouDev</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">MantouDev</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://mantoudev.com/2018/11/16/[大数据安全]Kerberos集群安装配置/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="mantou">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MantouDev">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[大数据安全]Kerberos集群安装配置</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-16T21:39:40+08:00">
+                2018-11-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/BigData/" itemprop="url" rel="index">
+                    <span itemprop="name">BigData</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/BigData/安全/" itemprop="url" rel="index">
+                    <span itemprop="name">安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h2><p>Kerberos是一种计算机网络认证协议，它允许某实体在非安全网络环境下通信，向另一个实体以一种安全的方式证明自己的身份。它也指由麻省理工实现此协议，并发布的一套免费软件。它的设计主要针对客户-服务器模型，并提供了一系列交互认证——用户和服务器都能验证对方的身份。Kerberos协议可以保护网络实体免受窃听和重复攻击。<br><a id="more"></a></p>
+<p>Kerberos协议基于对称密码学，并需要一个值得信赖的第三方。Kerberos协议的扩展可以为认证的某些阶段提供公钥密码学支持。</p>
+<h2 id="2-环境说明："><a href="#2-环境说明：" class="headerlink" title="2. 环境说明："></a>2. 环境说明：</h2><ul>
+<li>CDH版本：5.11.2</li>
+<li>Linux版本：Centos 7</li>
+<li>Docker版本：Docker version 18.06.0-ce</li>
+<li>JDK版本：1.8</li>
+<li>操作用户：root</li>
+</ul>
+<p>机器部署：</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>IP</th>
+<th>主机名</th>
+<th>Server</th>
+<th>Client</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>192.168.101.232</td>
+<td>cdh-server-1</td>
+<td>N/A</td>
+<td>Kerberos client</td>
+</tr>
+<tr>
+<td>2</td>
+<td>192.168.101.233</td>
+<td>cdh-node-1</td>
+<td>Kerberos server</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>3</td>
+<td>192.168.101.234</td>
+<td>cdh-node-2</td>
+<td>N/A</td>
+<td>Kerberos client</td>
+</tr>
+<tr>
+<td>4</td>
+<td>192.168.101.235</td>
+<td>cdh-node-3</td>
+<td>N/A</td>
+<td>Kerberos client</td>
+</tr>
+</tbody>
+</table>
+<p>各节点之间可以通过ssh免密码登录<br>Kerberos服务器和客户之间的时间同步</p>
+<h2 id="3-Kerberos-安装"><a href="#3-Kerberos-安装" class="headerlink" title="3. Kerberos 安装"></a>3. Kerberos 安装</h2><p><code>cdh-node-1</code>作为Kerberos主节点安装服务：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install krb5-libs krb5-server krb5-workstation</span><br></pre></td></tr></table></figure></p>
+<p>通过命令查看安装列表<code>rpm -qa|grep krb5</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@cdh-node-1 /]# rpm -qa  | grep krb5</span><br><span class="line">krb5-workstation-1.15.1-19.el7.x86_64</span><br><span class="line">krb5-devel-1.15.1-19.el7.x86_64</span><br><span class="line">krb5-server-1.15.1-19.el7.x86_64</span><br><span class="line">krb5-libs-1.15.1-19.el7.x86_64</span><br><span class="line">[root@cdh-node-1 /]#</span><br></pre></td></tr></table></figure>
+<h2 id="4-配置"><a href="#4-配置" class="headerlink" title="4. 配置"></a>4. 配置</h2><p>kdc服务器包含三个配置文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 集群上所有节点都有这个文件而且内容同步</span><br><span class="line">/etc/krb5.conf</span><br><span class="line"># 主服务器上的kdc配置</span><br><span class="line">/var/kerberos/krb5kdc/kdc.conf</span><br><span class="line"># 能够不直接访问 KDC 控制台而从 Kerberos 数据库添加和删除主体，需要添加配置</span><br><span class="line">/var/kerberos/krb5kdc/kadm5.acl</span><br></pre></td></tr></table></figure></p>
+<p><strong>1. 首先配置<code>/etc/krb5.conf</code>文件：</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[logging]</span><br><span class="line"> default = FILE:/var/log/krb5libs.log</span><br><span class="line"> kdc = FILE:/var/log/krb5kdc.log</span><br><span class="line"> admin_server = FILE:/var/log/kadmind.log</span><br><span class="line"></span><br><span class="line">[libdefaults]</span><br><span class="line"> default_realm = EXAMPLE.COM  #此处需要进行配置，把默认的EXAMPLE.COM修改为自己要定义的值</span><br><span class="line"> dns_lookup_kdc = false</span><br><span class="line"> dns_lookup_realm = false</span><br><span class="line"> ticket_lifetime = 24h</span><br><span class="line"> renew_lifetime = 7d</span><br><span class="line"> forwardable = true</span><br><span class="line"> default_tgs_enctypes = rc4-hmac</span><br><span class="line"> default_tkt_enctypes = rc4-hmac</span><br><span class="line"> permitted_enctypes = rc4-hmac</span><br><span class="line"> udp_preference_limit = 1</span><br><span class="line"> kdc_timeout = 3000</span><br><span class="line"></span><br><span class="line">[realms]</span><br><span class="line"> EXAMPLE.COM = &#123;</span><br><span class="line"> kdc = cdh-node-1   #此处配置的为主机名</span><br><span class="line"> admin_server = cdh-node-1  #同上</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>配置项说明：</strong><br>更多参数设置请参考：<a href="http://web.mit.edu/kerberos/krb5-latest/doc/admin/conf_files/krb5_conf.html?highlight=rdns" target="_blank" rel="noopener">官方文档。</a></p>
+<p>以下是几个核心参数的说明：</p>
+<ul>
+<li><code>[logging]</code>：日志输出设置   （可选）  </li>
+<li><p><code>[libdefaults]</code>：连接的默认配置</p>
+<ul>
+<li><code>default_realm</code>：Kerberos应用程序的默认领域，所有的principal都将带有这个领域标志</li>
+<li><code>ticket_lifetime</code>： 表明凭证生效的时限，一般为24小时</li>
+<li><code>renew_lifetime</code>： 表明凭证最长可以被延期的时限，一般为一个礼拜。当凭证过期之后，对安全认证的服务的后续访问则会失败</li>
+<li><code>clockskew</code>：时钟偏差是不完全符合主机系统时钟的票据时戳的容差，超过此容差将不接受此票据。通常，将时钟扭斜设置为 300 秒（5 分钟）。这意味着从服务器的角度看，票证的时间戳与它的偏差可以是在前后 5 分钟内</li>
+<li><code>udp_preference_limit= 1</code>：禁止使用 udp 可以防止一个 Hadoop 中的错误</li>
+<li><code>default_ccache_name</code>：credential缓存名，默认值为</li>
+</ul>
+</li>
+<li><p><code>[realms]</code>：列举使用的 realm</p>
+<ul>
+<li><code>kdc</code>：代表要 kdc 的位置。格式是 机器:端口</li>
+<li><code>admin_server</code>：代表 admin 的位置。格式是 机器:端口</li>
+<li><code>default_domain</code>：代表默认的域名</li>
+</ul>
+</li>
+<li><p><code>[domain_realm]</code>：域名到realm的关系  （可选）</p>
+</li>
+</ul>
+<p><strong>2.配置<code>/var/kerberos/krb5kdc/kdc.conf</code>文件</strong></p>
+<blockquote>
+<p>此处为EXAMPLE.COM与/etc/krb5.conf中的配置保持一致。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[kdcdefaults]</span><br><span class="line"> kdc_ports = 88</span><br><span class="line"> kdc_tcp_ports = 88</span><br><span class="line"></span><br><span class="line">[realms]</span><br><span class="line"> EXAMPLE.COM = &#123;</span><br><span class="line">  #master_key_type = aes256-cts</span><br><span class="line">  acl_file = /var/kerberos/krb5kdc/kadm5.acl</span><br><span class="line">  dict_file = /usr/share/dict/words</span><br><span class="line">  admin_keytab = /var/kerberos/krb5kdc/kadm5.keytab</span><br><span class="line">  supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal camellia256-cts:normal camellia128-cts:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal</span><br><span class="line">  max_life = 1d</span><br><span class="line">  max_renewable_life = 7d</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>配置项说明：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- `kdcdefaults`：kdc相关配置，这里只设置了端口信息</span><br><span class="line">- `realms`：realms的配置</span><br><span class="line">    - `EXAMPLE.COM`：设定的realms领域</span><br><span class="line">    - `master_key_type`：和 supported_enctypes 默认使用 aes256-cts。JAVA 使用 aes256-cts 验证方式需要安装 JCE包(推荐不使用)</span><br><span class="line">    - `acl_file`：标注了 admin 的用户权限，文件格式是：Kerberos_principal permissions [target_principal] [restrictions]</span><br><span class="line">    - `supported_enctypes`：支持的校验方式</span><br><span class="line">    - `admin_keytab`：KDC 进行校验的 keytab</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p><strong>关于<code>AES-256</code>加密</strong>：<br>对于使用 Centos5.6 及以上的系统，默认使用 <code>AES-256</code>来加密的。这就需要集群中的所有节点上安装 <a href="http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html" target="_blank" rel="noopener">Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy File</a><br>下载的文件是一个 zip 包，解开后，将里面的两个文件放到下面的目录中：<code>$JAVA_HOME/jre/lib/security</code></p>
+</blockquote>
+<p><strong>3. 创建<code>/var/kerberos/krb5kdc/kadm5.acl</code></strong><br>内容为：<a href="mailto:`*/admin@EXAMPLE.COM" target="_blank" rel="noopener">`*/admin@EXAMPLE.COM</a>  <em><code>代表名称匹配</code>/admin@EXAMPLE COM` 都认为是admin，权限是 </em> 代表全部权限。<br>在KDC上我们需要编辑acl文件来设置权限，该acl文件的默认路径是 <code>/var/kerberos/krb5kdc/kadm5.acl</code>（也可以在文件kdc.conf中修改）。</p>
+<p>Kerberos的kadmind daemon会使用该文件来管理对Kerberos database的访问权限。对于那些可能会对pincipal产生影响的操作，acl文件也能控制哪些principal能操作哪些其他pricipals。</p>
+<p><strong>4. 创建Kerberos数据库</strong><br>此步可能用时较长，创建完成会在<code>/var/kerberos/krb5kdc/</code>下面生成一系列文件。并且会提示输入数据库管理员的密码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/sbin/kdb5_util create -r EXAMPLE.COM –s # 此处为EXAMPLE.COM与/etc/krb5.conf中的配置保持一致。</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><code>[-s]</code>：表示生成stash file，并在其中存储master server key（krb5kdc）；</li>
+<li><code>[-r]</code>：指定一个realm name —— 当krb5.conf中定义了多个realm时才是必要的。</li>
+</ul>
+<p>如果需要重建数据库，将<code>/var/kerberos/krb5kdc</code>目录下的principal相关的文件删除即可.</p>
+<p>当Kerberos database创建好后，可以看到目录 <code>/var/kerberos/krb5kdc</code> 下生成了几个文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">kadm5.acl</span><br><span class="line">kdc.conf</span><br><span class="line">principal</span><br><span class="line">principal.kadm5</span><br><span class="line">principal.kadm5.lock</span><br><span class="line">principal.ok</span><br></pre></td></tr></table></figure>
+<p><strong>5. 添加database administrator</strong><br>为Kerberos database添加administrative principals (即能够管理database的principals) —— 至少要添加1个principal来使得Kerberos的管理进程kadmind能够在网络上与程序kadmin进行通讯。</p>
+<p>创建管理员并输入密码<code>admin</code>。kadmin.local可以直接运行在KDC上，而无需通过Kerberos认证。</p>
+<p>为用户设置密码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@cdh-node-1 /]# kadmin.local -q &quot;addprinc admin/admin&quot;</span><br><span class="line">Authenticating as principal root/admin@EXAMPLE.COM with password.</span><br><span class="line">WARNING: no policy specified for admin/admin@EXAMPLE.COM; defaulting to no policy</span><br><span class="line">Enter password for principal &quot;admin/admin@EXAMPLE.COM&quot;:</span><br><span class="line">Re-enter password for principal &quot;admin/admin@EXAMPLE.COM&quot;:  </span><br><span class="line">Principal &quot;admin/admin@EXAMPLE.COM&quot; created.</span><br></pre></td></tr></table></figure>
+<p><strong>6. 设置kerberos服务为开机启动，关闭防火墙</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">chkconfig krb5kdc on</span><br><span class="line">chkconfig kadmin on</span><br><span class="line">chkconfig iptables off</span><br></pre></td></tr></table></figure></p>
+<p><strong>7. 启动krb5kdc和kadmind进程</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/usr/sbin/kadmind</span><br><span class="line">/usr/sbin/krb5kdc</span><br></pre></td></tr></table></figure></p>
+<p>或<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">service krb5kdc start</span><br><span class="line">service kadmin start</span><br><span class="line">service krb5kdc status</span><br></pre></td></tr></table></figure></p>
+<p>现在KDC已经在工作了。这两个daemons将会在后台运行，可以查看它们的日志文件（<code>/var/log/krb5kdc.log 和 /var/log/kadmind.log</code>）。</p>
+<p><strong>8. 检查Kerberos正常运行</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kinit admin/admin</span><br></pre></td></tr></table></figure></p>
+<p><strong>9. 集群中的其他主机安装Kerberos Client</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install krb5-workstation krb5-libs krb5-auth-dialog</span><br></pre></td></tr></table></figure></p>
+<p>配置这些主机上的<code>/etc/krb5.conf</code>，这个文件的内容与KDC中的文件保持一致即可。  </p>
+<p><strong>10. 在cm节点安装ldap客户端</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install openldap-clients</span><br></pre></td></tr></table></figure></p>
+<h2 id="5-Kerberos使用"><a href="#5-Kerberos使用" class="headerlink" title="5. Kerberos使用"></a>5. Kerberos使用</h2><p>常用命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">kinit admin/admin@EXAMPLE.COM # 初始化证书</span><br><span class="line">klist # 查看当前证书</span><br><span class="line">kadmin.local -q &quot;list_principals&quot;   # 列出Kerberos中的所有认证用户</span><br><span class="line">kadmin.local -q &quot;addprinc user1&quot;  # 添加认证用户，需要输入密码</span><br><span class="line">kinit user1  # 使用该用户登录，获取身份认证，需要输入密码</span><br><span class="line">klist  # 查看当前用户的认证信息ticket</span><br><span class="line">kinit –R  # 更新ticket</span><br><span class="line">kdestroy  # 销毁当前的ticket</span><br><span class="line">kadmin.local -q &quot;delprinc user1&quot;  # 删除认证用户</span><br></pre></td></tr></table></figure>
+<h3 id="5-1-管理员使用"><a href="#5-1-管理员使用" class="headerlink" title="5.1 管理员使用"></a>5.1 管理员使用</h3><p><strong>1. 登录</strong><br>登录到管理员账户，如果在本机上，可以通过kadmin.local直接登录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@cdh-node-1 /]# kadmin.local</span><br><span class="line">Authenticating as principal root/admin@EXAMPLE.COM with password.</span><br><span class="line">kadmin.local:</span><br></pre></td></tr></table></figure>
+<p>其它机器的，先使用kinit进行验证:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@cdh-server-1 /]# kinit admin/admin</span><br><span class="line">Password for admin/admin@EXAMPLE.COM:</span><br><span class="line">[root@cdh-server-1 /]# kadmin</span><br><span class="line">Authenticating as principal admin/admin@EXAMPLE.COM with password.</span><br><span class="line">Password for admin/admin@EXAMPLE.COM:</span><br><span class="line">kadmin:</span><br></pre></td></tr></table></figure>
+<p><strong>2. 增删改查账户</strong><br>在管理员的状态下使用<code>addprinc</code>,<code>delprinc</code>,<code>modprinc</code>,<code>listprincs</code>命令。使用<code>?</code>可以列出所有的命令。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@cdh-node-1 /]# kadmin.local</span><br><span class="line">Authenticating as principal root/admin@EXAMPLE.COM with password.</span><br><span class="line">kadmin.local:  delprinc test</span><br><span class="line">Are you sure you want to delete the principal &quot;test@EXAMPLE.COM&quot;? (yes/no): yes</span><br><span class="line">Principal &quot;test@EXAMPLE.COM&quot; deleted.</span><br><span class="line">Make sure that you have removed this principal from all ACLs before reusing.</span><br><span class="line">kadmin.local:  listprincs</span><br><span class="line">HTTP/cdh-node-1@EXAMPLE.COM</span><br><span class="line">HTTP/cdh-node-2@EXAMPLE.COM</span><br><span class="line">HTTP/cdh-node-3@EXAMPLE.COM</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p><strong>3. 生成keytab:使用<code>xst</code>命令或者<code>ktadd</code>命令</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@cdh-node-1 /]# kadmin:xst -k /xxx/xxx/kerberos.keytab hdfs/hadoop1</span><br></pre></td></tr></table></figure></p>
+<h3 id="5-2-用户使用"><a href="#5-2-用户使用" class="headerlink" title="5.2 用户使用"></a>5.2 用户使用</h3><p><strong>1. 查看当前认证用户</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@cdh-node-2 /]# klist</span><br><span class="line">Ticket cache: FILE:/tmp/krb5cc_0</span><br><span class="line">Default principal: hdfs@EXAMPLE.COM</span><br><span class="line"></span><br><span class="line">Valid starting       Expires              Service principal</span><br><span class="line">08/08/2018 17:49:41  08/09/2018 17:49:41  krbtgt/EXAMPLE.COM@EXAMPLE.COM</span><br></pre></td></tr></table></figure></p>
+<p><strong>2. 认证用户</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@cdh-node-2 /]# kinit -kt /xx/xx/kerberos.keytab hdfs/hadoop1</span><br></pre></td></tr></table></figure></p>
+<p><strong>3. 删除当前的认证的缓存</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@cdh-node-2 /]# kdestroy</span><br><span class="line">[root@cdh-node-2 /]# klist</span><br><span class="line">klist: No credentials cache found (filename: /tmp/krb5cc_0)</span><br></pre></td></tr></table></figure></p>
+<h2 id="6-一些概念"><a href="#6-一些概念" class="headerlink" title="6. 一些概念"></a>6. 一些概念</h2><h4 id="1-Principal"><a href="#1-Principal" class="headerlink" title="1. Principal"></a>1. Principal</h4><p>Kerberos principal用于在kerberos加密系统中标记一个唯一的身份。<br>kerberos为kerberos principal分配tickets使其可以访问由kerberos加密的hadoop服务。<br>对于hadoop，principals的格式为<a href="mailto:username/fully.qualified.domain.name@YOUR-REALM.COM" target="_blank" rel="noopener">username/fully.qualified.domain.name@YOUR-REALM.COM</a>.</p>
+<h4 id="2-Keytab"><a href="#2-Keytab" class="headerlink" title="2. Keytab"></a>2. Keytab</h4><p>keytab是包含principals和加密principal key的文件。<br>keytab文件对于每个host是唯一的，因为key中包含hostname。keytab文件用于不需要人工交互和保存纯文本密码，实现到kerberos上验证一个主机上的principal。<br>因为服务器上可以访问keytab文件即可以以principal的身份通过kerberos的认证，所以，keytab文件应该被妥善保存，应该只有少数的用户可以访问。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="mantou 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="mantou 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Kerberos/" rel="tag"># Kerberos</a>
+          
+            <a href="/tags/大数据安全/" rel="tag"># 大数据安全</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/15/[大数据安全]Apache Kylin 安全配置(Kerberos)/" rel="next" title="[大数据安全]Apache Kylin 安全配置(Kerberos)">
+                <i class="fa fa-chevron-left"></i> [大数据安全]Apache Kylin 安全配置(Kerberos)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/20/[大数据安全]CDH集群禁用Kerberos/" rel="prev" title="[大数据安全]CDH集群禁用Kerberos">
+                [大数据安全]CDH集群禁用Kerberos <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+  <div id="gitalk-container"></div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="mantou">
+            
+              <p class="site-author-name" itemprop="name">mantou</p>
+              <p class="site-description motion-element" itemprop="description">吭哧吭哧</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/mantoudev" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:mantoudev@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-概述"><span class="nav-number">1.</span> <span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-环境说明："><span class="nav-number">2.</span> <span class="nav-text">2. 环境说明：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Kerberos-安装"><span class="nav-number">3.</span> <span class="nav-text">3. Kerberos 安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-配置"><span class="nav-number">4.</span> <span class="nav-text">4. 配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Kerberos使用"><span class="nav-number">5.</span> <span class="nav-text">5. Kerberos使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-管理员使用"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 管理员使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-用户使用"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 用户使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-一些概念"><span class="nav-number">6.</span> <span class="nav-text">6. 一些概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Principal"><span class="nav-number">6.0.1.</span> <span class="nav-text">1. Principal</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Keytab"><span class="nav-number">6.0.2.</span> <span class="nav-text">2. Keytab</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mantou</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+		var gitalk = new Gitalk({
+		  clientID: '30cbff28d4b30a7b4f1e',
+		  clientSecret: 'ed6f560eb6e7252d23780c2bf4a6f8caa146f066',
+		  repo: 'blog-comments',
+		  owner: 'mantoudev',
+		  admin: ['mantoudev'],
+		  id: location.pathname,
+		  distractionFreeMode: 'true'
+		})
+		gitalk.render('gitalk-container')
+       </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

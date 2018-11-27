@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Kerberos,大数据安全,Kylin,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1. 概述本文首先会简单介绍Kylin的安装配置，然后介绍启用Kerberos的CDH集群中如何部署及使用Kylin。 Apache Kylin™是一个开源的分布式分析引擎，提供Hadoop/Spark之上的SQL查询接口及多维分析（OLAP）能力以支持超大规模数据，最初由eBay Inc. 开发并贡献至开源社区。它能在亚秒内查询巨大的Hive表。">
+<meta name="keywords" content="Kerberos,大数据安全,Kylin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[大数据安全]Apache Kylin 安全配置(Kerberos)">
+<meta property="og:url" content="http://mantoudev.com/2018/11/15/[大数据安全]Apache Kylin 安全配置(Kerberos)/index.html">
+<meta property="og:site_name" content="MantouDev">
+<meta property="og:description" content="1. 概述本文首先会简单介绍Kylin的安装配置，然后介绍启用Kerberos的CDH集群中如何部署及使用Kylin。 Apache Kylin™是一个开源的分布式分析引擎，提供Hadoop/Spark之上的SQL查询接口及多维分析（OLAP）能力以支持超大规模数据，最初由eBay Inc. 开发并贡献至开源社区。它能在亚秒内查询巨大的Hive表。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://kylin.apache.org/assets/images/kylin_diagram.png">
+<meta property="og:image" content="https://s1.ax1x.com/2018/09/14/iEhVEj.png">
+<meta property="og:image" content="https://s1.ax1x.com/2018/09/14/iEhZUs.png">
+<meta property="og:updated_time" content="2018-11-27T08:43:12.068Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[大数据安全]Apache Kylin 安全配置(Kerberos)">
+<meta name="twitter:description" content="1. 概述本文首先会简单介绍Kylin的安装配置，然后介绍启用Kerberos的CDH集群中如何部署及使用Kylin。 Apache Kylin™是一个开源的分布式分析引擎，提供Hadoop/Spark之上的SQL查询接口及多维分析（OLAP）能力以支持超大规模数据，最初由eBay Inc. 开发并贡献至开源社区。它能在亚秒内查询巨大的Hive表。">
+<meta name="twitter:image" content="http://kylin.apache.org/assets/images/kylin_diagram.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://mantoudev.com/2018/11/15/[大数据安全]Apache Kylin 安全配置(Kerberos)/">
+
+
+
+
+
+  <title>[大数据安全]Apache Kylin 安全配置(Kerberos) | MantouDev</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">MantouDev</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://mantoudev.com/2018/11/15/[大数据安全]Apache Kylin 安全配置(Kerberos)/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="mantou">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MantouDev">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[大数据安全]Apache Kylin 安全配置(Kerberos)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-15T21:39:40+08:00">
+                2018-11-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/BigData/" itemprop="url" rel="index">
+                    <span itemprop="name">BigData</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/BigData/安全/" itemprop="url" rel="index">
+                    <span itemprop="name">安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h2><p>本文首先会简单介绍Kylin的安装配置，然后介绍启用Kerberos的CDH集群中如何部署及使用Kylin。</p>
+<p>Apache Kylin™是一个开源的分布式分析引擎，提供Hadoop/Spark之上的SQL查询接口及多维分析（OLAP）能力以支持超大规模数据，最初由eBay Inc. 开发并贡献至开源社区。它能在亚秒内查询巨大的Hive表。<br><a id="more"></a></p>
+<p><img src="http://kylin.apache.org/assets/images/kylin_diagram.png" alt="image"></p>
+<h4 id="1-2-环境说明"><a href="#1-2-环境说明" class="headerlink" title="1.2 环境说明"></a>1.2 环境说明</h4><ul>
+<li>CDH版本：5.11.2</li>
+<li>Linux版本：7.4.1708</li>
+<li>Docker版本：Docker version 18.06.0-ce</li>
+<li>JDK版本：1.8</li>
+<li>操作用户：root</li>
+</ul>
+<h2 id="2-Kylin安装配置"><a href="#2-Kylin安装配置" class="headerlink" title="2.Kylin安装配置"></a>2.Kylin安装配置</h2><h3 id="2-1-安装"><a href="#2-1-安装" class="headerlink" title="2.1 安装"></a>2.1 安装</h3><p>此处以Kylin 2.0.0版本为例。<br>社区版Kylin地址：<a href="https://archive.apache.org/dist/kylin/" target="_blank" rel="noopener">https://archive.apache.org/dist/kylin/</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@node-3 ~]# cd /usr/local/src/</span><br><span class="line">[root@node-3 src]# wget https://archive.apache.org/dist/kylin/apache-kylin-2.0.0/apache-kylin-2.0.0-bin-cdh57.tar.gz</span><br><span class="line">[root@node-3 src]# tar xf apache-kylin-2.0.0-bin-cdh57.tar.gz</span><br><span class="line">[root@node-3 src]# cp -a apache-kylin-2.0.0-bin /usr/local/</span><br><span class="line">[root@node-3 src]# ln -s /usr/local/apache-kylin-2.0.0-bin /usr/local/kylin</span><br></pre></td></tr></table></figure>
+<h3 id="2-2-环境配置"><a href="#2-2-环境配置" class="headerlink" title="2.2 环境配置"></a>2.2 环境配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">export BASE_PATH_BIG=/opt/cloudera/parcels/CDH/lib</span><br><span class="line"></span><br><span class="line">#added by Hbase</span><br><span class="line">export HBASE_HOME=$BASE_PATH_BIG/hbase</span><br><span class="line"></span><br><span class="line">#added by HCat</span><br><span class="line">export HCAT_HOME=/opt/cloudera/parcels/CDH/lib/hive-hcatalog/share/hcatalog</span><br><span class="line"></span><br><span class="line">#added by Kylin</span><br><span class="line">export KYLIN_HOME=/usr/local/kylin</span><br><span class="line">export PATH=$HBASE_HOME/bin:$PATH</span><br></pre></td></tr></table></figure>
+<p>然后执行<code>source /etc/profile</code>生效。</p>
+<h3 id="2-3-Kylin配置"><a href="#2-3-Kylin配置" class="headerlink" title="2.3 Kylin配置"></a>2.3 Kylin配置</h3><p>编辑<code>/usr/local/kylin/conf/kylin.properites</code>文件，新增以下配置：</p>
+<blockquote>
+<p>Kylin2.0+版本配置的名称有变化，具体参考：<a href="https://github.com/apache/kylin/blob/2.0.x/core-common/src/main/resources/kylin-backward-compatibility.properties" target="_blank" rel="noopener">https://github.com/apache/kylin/blob/2.0.x/core-common/src/main/resources/kylin-backward-compatibility.properties</a></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">## 修改配置（替换地址）</span><br><span class="line">kylin.rest.servers=192.168.100.102:7070</span><br><span class="line"></span><br><span class="line">## 新增配置</span><br><span class="line">kylin.job.jar=/usr/local/apache-kylin-2.0.0-bin/lib/kylin-job-2.0.0.jar</span><br><span class="line">kylin.coprocessor.local.jar=/usr/local/apache-kylin-2.0.0-bin/lib/kylin-coprocessor-2.0.0.jar</span><br><span class="line">## 替换地址</span><br><span class="line">kylin.job.yarn.app.rest.check.status.url=http://cdh-node-2:8088/ws/v1/cluster/apps/$&#123;job_id&#125;?anonymous=true</span><br><span class="line">kylin.job.mr.lib.dir=/opt/cloudera/parcels/CDH-5.11.2-1.cdh5.11.2.p0.4/lib/sentry/lib</span><br></pre></td></tr></table></figure>
+<h5 id="配置说明："><a href="#配置说明：" class="headerlink" title="配置说明："></a>配置说明：</h5><ul>
+<li><p><code>kylin.rest.servers</code>：kylin实例服务器列表，注意：不包括以job模式运行的服务器实例！</p>
+</li>
+<li><p><code>kylin.job.jar</code>：MR jobs依赖</p>
+</li>
+<li><code>kylin.coprocessor.local.jar</code>：Hbase协同处理依赖，用于提高性能。</li>
+<li><code>kylin.job.yarn.app.rest.check.status.url</code>：yarn工作区</li>
+<li><code>kylin.job.mr.lib.dir</code>：Hive/Hbase依赖目录。（在没有安装Hive/Hbase的节点上构建Cube会因为找不到依赖报ClassNotFoundException错误，需要此配置。具体参考这边博文<a href="http://www.whitewood.me/2017/11/04/Kylin%E5%AE%9E%E6%88%98%EF%BC%88%E5%85%AD%EF%BC%89%EF%BC%9A%E4%B8%8A%E4%BC%A0Kylin%20MR%E4%BE%9D%E8%B5%96/" target="_blank" rel="noopener">《上传Kylin MR依赖》
+</a>)。</li>
+</ul>
+<p>更多配置请参考<a href="http://kylin.apache.org/cn/docs/install/configuration.html" target="_blank" rel="noopener">官网配置指南</a>。</p>
+<h3 id="2-4-创建用户"><a href="#2-4-创建用户" class="headerlink" title="2.4 创建用户"></a>2.4 创建用户</h3><p>在每个节点创建Kylin用户</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">useradd kylin</span><br></pre></td></tr></table></figure>
+<h2 id="3-Kerberos配置"><a href="#3-Kerberos配置" class="headerlink" title="3. Kerberos配置"></a>3. Kerberos配置</h2><h3 id="3-1-创建kylin账号"><a href="#3-1-创建kylin账号" class="headerlink" title="3.1 创建kylin账号"></a>3.1 创建kylin账号</h3><p>在Kerberos server上创建kylin账号：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@cdh-node-1 /]# kadmin.local</span><br><span class="line">Authenticating as principal admin/admin@HWINFO.COM with password.</span><br><span class="line">kadmin.local:  addprinc kylin</span><br><span class="line">WARNING: no policy specified for kylin@HWINFO.COM; defaulting to no policy</span><br><span class="line">Enter password for principal &quot;kylin@HWINFO.COM&quot;:</span><br><span class="line">Re-enter password for principal &quot;kylin@HWINFO.COM&quot;:</span><br><span class="line">add_principal: Principal or policy already exists while creating &quot;kylin@HWINFO.COM&quot;.</span><br><span class="line">kadmin.local:</span><br></pre></td></tr></table></figure>
+<h3 id="3-2-生成keytab文件"><a href="#3-2-生成keytab文件" class="headerlink" title="3.2 生成keytab文件"></a>3.2 生成keytab文件</h3><p>生成kylin账号keytab文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xst -norandkey -k kylin.keytab kylin@HWINFO.COM</span><br></pre></td></tr></table></figure></p>
+<p>将kylin.keytab复制到每个kylin节点上。</p>
+<h3 id="3-3-定时刷新kt"><a href="#3-3-定时刷新kt" class="headerlink" title="3.3 定时刷新kt"></a>3.3 定时刷新kt</h3><p>在kylin节点上配置定时任务进行<code>kinit</code>命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kinit -k -t /root/kylin.keytab kylin@HWINFO.COM</span><br></pre></td></tr></table></figure>
+<p>添加定时任务,这里设置每天凌晨1点执行一次，可根据kerberos的过期时间自己配置。</p>
+<ul>
+<li>编写shell脚本：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@cdh-node-2 security]# cat init_kt.sh</span><br><span class="line">#!/bin/bash</span><br><span class="line">kinit -kt ./kylin.keytab kylin@HWINFO.COM</span><br></pre></td></tr></table></figure>
+<ul>
+<li>添加定时任务：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@cdh-node-2 security]# crontab -e</span><br><span class="line"></span><br><span class="line"># 添加以下内容</span><br><span class="line">0 1 * * * root /home/security/init_kt.sh  &gt; /tmp/kylin-ktinit.log 2&gt;&amp;1</span><br><span class="line"></span><br><span class="line"># 查看定时任务</span><br><span class="line">[root@cdh-node-2 security]# crontab -l</span><br><span class="line">0 1 * * * root /home/security/init_kt.sh  &gt; /tmp/kylin-ktinit.log 2&gt;&amp;1</span><br></pre></td></tr></table></figure>
+<h3 id="3-4-添加Hive权限"><a href="#3-4-添加Hive权限" class="headerlink" title="3.4 添加Hive权限"></a>3.4 添加Hive权限</h3><ul>
+<li>登录Hive<br>使用拥有操作hive权限的kerberos账户登录beeline：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@cdh-node-3 hive]# beeline -u &apos;jdbc:hive2://cdh-node-3:10000/default;principal=hive/cdh-node-3@HWINFO.COM&apos;</span><br><span class="line">Java HotSpot(TM) 64-Bit Server VM warning: ignoring option MaxPermSize=512M; support was removed in 8.0</span><br><span class="line">Java HotSpot(TM) 64-Bit Server VM warning: Using incremental CMS is deprecated and will likely be removed in a future release</span><br><span class="line">Java HotSpot(TM) 64-Bit Server VM warning: ignoring option MaxPermSize=512M; support was removed in 8.0</span><br><span class="line">scan complete in 2ms</span><br><span class="line">Connecting to jdbc:hive2://cdh-node-3:10000/default;principal=hive/cdh-node-3@HWINFO.COM</span><br><span class="line">Connected to: Apache Hive (version 1.1.0-cdh5.11.2)</span><br><span class="line">Driver: Hive JDBC (version 1.1.0-cdh5.11.2)</span><br><span class="line">Transaction isolation: TRANSACTION_REPEATABLE_READ</span><br><span class="line">Beeline version 1.1.0-cdh5.11.2 by Apache Hive</span><br><span class="line">0: jdbc:hive2://cdh-node-3:10000/default&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>添加kylin权限<br>将<code>admin</code>角色权限赋予<code>kylin</code>：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">0: jdbc:hive2://cdh-node-3:10000/default&gt; grant role admin to user kylin;</span><br><span class="line">INFO  : Compiling command(queryId=hive_20180914174141_6359e1a1-251f-4116-b646-0aa9f55dcfa8): grant role admin to user leili</span><br><span class="line">INFO  : Semantic Analysis Completed</span><br><span class="line">INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)</span><br><span class="line">INFO  : Completed compiling command(queryId=hive_20180914174141_6359e1a1-251f-4116-b646-0aa9f55dcfa8); Time taken: 0.069 seconds</span><br><span class="line">INFO  : Executing command(queryId=hive_20180914174141_6359e1a1-251f-4116-b646-0aa9f55dcfa8): grant role admin to user leili</span><br><span class="line">INFO  : Starting task [Stage-0:DDL] in serial mode</span><br><span class="line">INFO  : Completed executing command(queryId=hive_20180914174141_6359e1a1-251f-4116-b646-0aa9f55dcfa8); Time taken: 0.331 seconds</span><br><span class="line">INFO  : OK</span><br><span class="line">No rows affected (0.528 seconds)</span><br></pre></td></tr></table></figure>
+<h3 id="3-5-添加Hbase权限"><a href="#3-5-添加Hbase权限" class="headerlink" title="3.5 添加Hbase权限"></a>3.5 添加Hbase权限</h3><p>使用拥有操作hbase权限的kerberos账户登录hbase shell：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@cdh-node-3 hive]# hbase shell</span><br><span class="line">Java HotSpot(TM) 64-Bit Server VM warning: Using incremental CMS is deprecated and will likely be removed in a future release</span><br><span class="line">18/09/14 17:44:40 INFO Configuration.deprecation: hadoop.native.lib is deprecated. Instead, use io.native.lib.available</span><br><span class="line">HBase Shell; enter &apos;help&lt;RETURN&gt;&apos; for list of supported commands.</span><br><span class="line">Type &quot;exit&lt;RETURN&gt;&quot; to leave the HBase Shell</span><br><span class="line">Version 1.2.0-cdh5.11.2, rUnknown, Fri Aug 18 14:09:37 PDT 2017</span><br></pre></td></tr></table></figure>
+<ul>
+<li>给kylin用户授权<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">base(main):001:0&gt; grant &apos;kylin&apos;,&apos;RWXCA&apos;</span><br><span class="line">0 row(s) in 0.5830 seconds</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>切换到kylin用户重新登录hbase shell，测试一下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):001:0&gt; whoami</span><br><span class="line">kylin@HWINFO.COM (auth:KERBEROS)</span><br><span class="line">    groups: kylin</span><br><span class="line"></span><br><span class="line">hbase(main):002:0&gt; create &apos;test&apos;, &apos;cf&apos;</span><br><span class="line">0 row(s) in 2.6930 seconds</span><br><span class="line"></span><br><span class="line">=&gt; Hbase::Table - test</span><br><span class="line">hbase(main):003:0&gt; list</span><br><span class="line">TABLE</span><br><span class="line">test</span><br><span class="line">1 row(s) in 0.0310 seconds</span><br></pre></td></tr></table></figure>
+<h3 id="3-6-执行Kylin检查"><a href="#3-6-执行Kylin检查" class="headerlink" title="3.6 执行Kylin检查"></a>3.6 执行Kylin检查</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@cdh-node-2 bin]# ./check-env.sh</span><br><span class="line">Retrieving hadoop conf dir...</span><br><span class="line">KYLIN_HOME is set to /usr/local/apache-kylin-2.0.0-bin</span><br></pre></td></tr></table></figure>
+<h3 id="3-7-启动kylin服务"><a href="#3-7-启动kylin服务" class="headerlink" title="3.7 启动kylin服务"></a>3.7 启动kylin服务</h3><p>先确认主机使用kerberos凭据为<code>kylin</code>，再启动：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@cdh-node-2 bin]# klist</span><br><span class="line">Ticket cache: FILE:/tmp/krb5cc_0</span><br><span class="line">Default principal: kylin@HWINFO.COM</span><br><span class="line"></span><br><span class="line">Valid starting       Expires              Service principal</span><br><span class="line">09/14/2018 17:48:28  09/15/2018 17:48:28  krbtgt/HWINFO.COM@HWINFO.COM</span><br><span class="line">	renew until 09/21/2018 17:48:28</span><br><span class="line">[root@cdh-node-2 bin]# ./kylin.sh start</span><br><span class="line">Retrieving hadoop conf dir...</span><br><span class="line">KYLIN_HOME is set to /usr/local/kylin</span><br><span class="line">Retrieving hive dependency...</span><br><span class="line">Retrieving hbase dependency...</span><br><span class="line">Retrieving hadoop conf dir...</span><br><span class="line">Retrieving kafka dependency...</span><br><span class="line">Retrieving Spark dependency...</span><br><span class="line">KYLIN_JVM_SETTINGS is -Xms1024M -Xmx4096M -Xss1024K -XX:MaxPermSize=128M -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:/usr/local/kylin/logs/kylin.gc.3982 -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=64M</span><br><span class="line"></span><br><span class="line">A new Kylin instance is started by root. To stop it, run &apos;kylin.sh stop&apos;</span><br><span class="line">Check the log at /usr/local/kylin/logs/kylin.log</span><br><span class="line">Web UI is at http://&lt;hostname&gt;:7070/kylin</span><br></pre></td></tr></table></figure>
+<h2 id="4-使用Kylin-Sample测试"><a href="#4-使用Kylin-Sample测试" class="headerlink" title="4. 使用Kylin Sample测试"></a>4. 使用Kylin Sample测试</h2><p>Kylin本身自带了一个测试例子，创建流程如下：<br>执行sample.sh脚本，这个主要是创建kylin的project、model、cube以及相关的hive表等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@cdh-node-2 bin]# ./sample.sh</span><br><span class="line">Retrieving hadoop conf dir...</span><br><span class="line">Retrieving hadoop conf dir...</span><br><span class="line">KYLIN_HOME is set to /usr/local/kylin</span><br><span class="line">Loading sample data into HDFS tmp path: /tmp/kylin/sample_cube/d</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">Sample cube is created successfully in project &apos;learn_kylin&apos;.</span><br><span class="line">Restart Kylin server or reload the metadata from web UI to see the change.</span><br></pre></td></tr></table></figure>
+<p>进入Kylin Web界面system - reload metadata<br>然后构建示例的cube，如果构建成功，并且能成功执行查询命令，则表示整个配置全部完成。</p>
+<p><img src="https://s1.ax1x.com/2018/09/14/iEhVEj.png" alt="构建成功"></p>
+<p><img src="https://s1.ax1x.com/2018/09/14/iEhZUs.png" alt="查询成功"></p>
+<hr>
+<p>[1] Cloudera Configuring Authentication Doc：     <a href="https://www.cloudera.com/documentation/enterprise/5-11-x/topics/sg_authentication.html" target="_blank" rel="noopener">https://www.cloudera.com/documentation/enterprise/5-11-x/topics/sg_authentication.html</a><br>[2] Kylin官网配置指南：<br><a href="http://kylin.apache.org/cn/docs/install/configuration.html" target="_blank" rel="noopener">http://kylin.apache.org/cn/docs/install/configuration.html</a><br>[3] Linux下的crontab定时执行任务命令详解：<br><a href="https://www.cnblogs.com/longjshz/p/5779215.html" target="_blank" rel="noopener">https://www.cnblogs.com/longjshz/p/5779215.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="mantou 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="mantou 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Kerberos/" rel="tag"># Kerberos</a>
+          
+            <a href="/tags/大数据安全/" rel="tag"># 大数据安全</a>
+          
+            <a href="/tags/Kylin/" rel="tag"># Kylin</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/21/[机器学习实战]决策树/" rel="next" title="[机器学习实战]决策树">
+                <i class="fa fa-chevron-left"></i> [机器学习实战]决策树
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/16/[大数据安全]Kerberos集群安装配置/" rel="prev" title="[大数据安全]Kerberos集群安装配置">
+                [大数据安全]Kerberos集群安装配置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+  <div id="gitalk-container"></div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="mantou">
+            
+              <p class="site-author-name" itemprop="name">mantou</p>
+              <p class="site-description motion-element" itemprop="description">吭哧吭哧</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/mantoudev" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:mantoudev@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-概述"><span class="nav-number">1.</span> <span class="nav-text">1. 概述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-环境说明"><span class="nav-number">1.0.1.</span> <span class="nav-text">1.2 环境说明</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Kylin安装配置"><span class="nav-number">2.</span> <span class="nav-text">2.Kylin安装配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-安装"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-环境配置"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 环境配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-Kylin配置"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 Kylin配置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#配置说明："><span class="nav-number">2.3.0.1.</span> <span class="nav-text">配置说明：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-创建用户"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 创建用户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Kerberos配置"><span class="nav-number">3.</span> <span class="nav-text">3. Kerberos配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-创建kylin账号"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 创建kylin账号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-生成keytab文件"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 生成keytab文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-定时刷新kt"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 定时刷新kt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-添加Hive权限"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 添加Hive权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-添加Hbase权限"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 添加Hbase权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-6-执行Kylin检查"><span class="nav-number">3.6.</span> <span class="nav-text">3.6 执行Kylin检查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-7-启动kylin服务"><span class="nav-number">3.7.</span> <span class="nav-text">3.7 启动kylin服务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-使用Kylin-Sample测试"><span class="nav-number">4.</span> <span class="nav-text">4. 使用Kylin Sample测试</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mantou</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+		var gitalk = new Gitalk({
+		  clientID: '30cbff28d4b30a7b4f1e',
+		  clientSecret: 'ed6f560eb6e7252d23780c2bf4a6f8caa146f066',
+		  repo: 'blog-comments',
+		  owner: 'mantoudev',
+		  admin: ['mantoudev'],
+		  id: location.pathname,
+		  distractionFreeMode: 'true'
+		})
+		gitalk.render('gitalk-container')
+       </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
