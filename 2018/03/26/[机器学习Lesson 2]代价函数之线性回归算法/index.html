@@ -540,8 +540,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/03/26/[机器学习Lesson 1] 机器学习简介/" rel="next" title="[机器学习Lesson 1] 机器学习简介">
-                <i class="fa fa-chevron-left"></i> [机器学习Lesson 1] 机器学习简介
+              <a href="/2018/03/26/[机器学习Lesson 3] 梯度下降算法/" rel="next" title="[机器学习Lesson 3]梯度下降算法">
+                <i class="fa fa-chevron-left"></i> [机器学习Lesson 3]梯度下降算法
               </a>
             
           </div>
@@ -550,8 +550,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/03/26/[机器学习Lesson 3] 梯度下降算法/" rel="prev" title="[机器学习Lesson 3]梯度下降算法">
-                [机器学习Lesson 3]梯度下降算法 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/04/11/[机器学习实战]K-近邻算法/" rel="prev" title="[机器学习实战]K-近邻算法">
+                [机器学习实战]K-近邻算法 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -942,7 +942,7 @@
 		  repo: 'blog-comments',
 		  owner: 'mantoudev',
 		  admin: ['mantoudev'],
-		  id: location.pathname,
+		  id: md5(location.pathname),
 		  distractionFreeMode: 'true'
 		})
 		gitalk.render('gitalk-container')
