@@ -376,6 +376,17 @@
 
           
           
+             <span id="/2018/04/18/[机器学习Lesson 4]多元线性回归/" class="leancloud_visitors" data-flag-title="[机器学习Lesson 4]多元线性回归">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
 
           
 
@@ -731,7 +742,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-多元线性回归定义"><span class="nav-number">1.</span> <span class="nav-text">1. 多元线性回归定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-梯度下降"><span class="nav-number">2.</span> <span class="nav-text">2. 梯度下降</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-当特征-n-1-时"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 当特征 n=1 时</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-当有一个以上特征时"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 当有一个以上特征时</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Feature-Scaling（特征缩放）"><span class="nav-number">3.</span> <span class="nav-text">3. Feature Scaling（特征缩放）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-介绍"><span class="nav-number">4.</span> <span class="nav-text">3.1 介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-特征范围"><span class="nav-number">4.1.</span> <span class="nav-text">3.2 特征范围</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-Mean-Normalization-均值归一化"><span class="nav-number">4.2.</span> <span class="nav-text">3.3 Mean Normalization(均值归一化)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Learning-Rate-学习效率"><span class="nav-number">5.</span> <span class="nav-text">4. Learning Rate(学习效率)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#总结："><span class="nav-number">5.0.0.1.</span> <span class="nav-text">总结：</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-多元线性回归定义"><span class="nav-text">1. 多元线性回归定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-梯度下降"><span class="nav-text">2. 梯度下降</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-当特征-n-1-时"><span class="nav-text">2.1 当特征 n=1 时</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-当有一个以上特征时"><span class="nav-text">2.2 当有一个以上特征时</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Feature-Scaling（特征缩放）"><span class="nav-text">3. Feature Scaling（特征缩放）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-介绍"><span class="nav-text">3.1 介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-特征范围"><span class="nav-text">3.2 特征范围</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-Mean-Normalization-均值归一化"><span class="nav-text">3.3 Mean Normalization(均值归一化)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Learning-Rate-学习效率"><span class="nav-text">4. Learning Rate(学习效率)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#总结："><span class="nav-text">总结：</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -1264,6 +1275,113 @@
 
 
   
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("1ksH739lNLQGmPbiKV7caYHV-gzGzoHsz", "kgyOnl48BVfVTzUF8NaU6gFY");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
 
   
 
