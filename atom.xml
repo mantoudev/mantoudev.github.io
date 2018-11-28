@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://mantoudev.com/"/>
-  <updated>2018-11-28T06:28:02.724Z</updated>
+  <updated>2018-11-28T16:43:10.882Z</updated>
   <id>http://mantoudev.com/</id>
   
   <author>
@@ -15,6 +15,39 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Atlas中文文档</title>
+    <link href="http://mantoudev.com/2018/11/29/Atlas%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/"/>
+    <id>http://mantoudev.com/2018/11/29/Atlas中文文档/</id>
+    <published>2018-11-28T16:09:50.000Z</published>
+    <updated>2018-11-28T16:43:10.882Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="/mantouBook/Atlas_cn/index.html">点击我打开《Atlas中文文档》Gitbook</a></p><p>阅读过程中如果有问题，欢迎将问题在下方评论中反馈给我，谢谢哟~</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;a href=&quot;/mantouBook/Atlas_cn/index.html&quot;&gt;点击我打开《Atlas中文文档》Gitbook&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;阅读过程中如果有问题，欢迎将问题在下方评论中反馈给我，谢谢哟~&lt;/p&gt;
+
+      
+    
+    </summary>
+    
+      <category term="BigData" scheme="http://mantoudev.com/categories/BigData/"/>
+    
+      <category term="Atlas" scheme="http://mantoudev.com/categories/BigData/Atlas/"/>
+    
+    
+      <category term="Atlas" scheme="http://mantoudev.com/tags/Atlas/"/>
+    
+      <category term="Gitbook" scheme="http://mantoudev.com/tags/Gitbook/"/>
+    
+      <category term="元数据管理" scheme="http://mantoudev.com/tags/%E5%85%83%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/"/>
+    
+  </entry>
   
   <entry>
     <title>使用Atlas进行元数据管理之Glossary(术语)</title>
@@ -159,38 +192,6 @@
       <category term="大数据安全" scheme="http://mantoudev.com/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%AE%89%E5%85%A8/"/>
     
       <category term="Kylin" scheme="http://mantoudev.com/tags/Kylin/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Atlas中文文档</title>
-    <link href="http://mantoudev.com/2018/11/15/Atlas%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/"/>
-    <id>http://mantoudev.com/2018/11/15/Atlas中文文档/</id>
-    <published>2018-11-14T16:09:50.000Z</published>
-    <updated>2018-11-28T16:26:14.330Z</updated>
-    
-    <content type="html"><![CDATA[<p><a href="/mantouBook/Atlas_cn/index.html">点击我打开《Atlas中文文档》Gitbook</a></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;&lt;a href=&quot;/mantouBook/Atlas_cn/index.html&quot;&gt;点击我打开《Atlas中文文档》Gitbook&lt;/a&gt;&lt;/p&gt;
-
-      
-    
-    </summary>
-    
-      <category term="BigData" scheme="http://mantoudev.com/categories/BigData/"/>
-    
-      <category term="Atlas" scheme="http://mantoudev.com/categories/BigData/Atlas/"/>
-    
-    
-      <category term="Atlas" scheme="http://mantoudev.com/tags/Atlas/"/>
-    
-      <category term="Gitbook" scheme="http://mantoudev.com/tags/Gitbook/"/>
-    
-      <category term="元数据管理" scheme="http://mantoudev.com/tags/%E5%85%83%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/"/>
     
   </entry>
   
