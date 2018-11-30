@@ -499,25 +499,25 @@
 <p>&#x53EF;&#x4EE5;&#x4F7F;&#x7528;AND/OR&#x6761;&#x4EF6;&#x5BF9;&#x591A;&#x4E2A;&#x5C5E;&#x6027;&#x8FDB;&#x884C;&#x57FA;&#x4E8E;&#x5C5E;&#x6027;&#x7684;&#x8FC7;&#x6EE4;&#x3002;</p>
 <h5 id="&#x8FC7;&#x6EE4;&#x793A;&#x4F8B;&#xFF08;&#x9002;&#x7528;&#x4E8E;hivetable&#x5C5E;&#x6027;&#xFF09;"><a name="&#x8FC7;&#x6EE4;&#x793A;&#x4F8B;&#xFF08;&#x9002;&#x7528;&#x4E8E;hivetable&#x5C5E;&#x6027;&#xFF09;" class="anchor-navigation-ex-anchor" href="#&#x8FC7;&#x6EE4;&#x793A;&#x4F8B;&#xFF08;&#x9002;&#x7528;&#x4E8E;hivetable&#x5C5E;&#x6027;&#xFF09;"><i class="fa fa-link" aria-hidden="true"></i></a><a name="&#x8FC7;&#x6EE4;&#x793A;&#x4F8B;&#xFF08;&#x9002;&#x7528;&#x4E8E;hivetable&#x5C5E;&#x6027;&#xFF09;" class="plugin-anchor" href="#&#x8FC7;&#x6EE4;&#x793A;&#x4F8B;&#xFF08;&#x9002;&#x7528;&#x4E8E;hivetable&#x5C5E;&#x6027;&#xFF09;"><i class="fa fa-link" aria-hidden="true"></i></a>&#x8FC7;&#x6EE4;&#x793A;&#x4F8B;&#xFF08;&#x9002;&#x7528;&#x4E8E;hive_table&#x5C5E;&#x6027;&#xFF09;</h5>
 <ul>
-<li>&#x5355;&#x4E2A;&#x5C5E;&#x6027;&#xFF1A;
-```
-{
+<li>&#x5355;&#x4E2A;&#x5C5E;&#x6027;&#xFF1A;<pre><code>{
    &quot;typeName&quot;:               &quot;hive_table&quot;,
    &quot;excludeDeletedEntities&quot;: true,
    &quot;offset&quot;:                 0,
    &quot;limit&quot;:                  25,
-   &quot;entityFilters&quot;: {<pre><code>  &quot;attributeName&quot;:  &quot;name&quot;,
-  &quot;operator&quot;:       &quot;contains&quot;,
-  &quot;attributeValue&quot;: &quot;customers&quot;
-</code></pre>   },
+   &quot;entityFilters&quot;: {
+      &quot;attributeName&quot;:  &quot;name&quot;,
+      &quot;operator&quot;:       &quot;contains&quot;,
+      &quot;attributeValue&quot;: &quot;customers&quot;
+   },
    &quot;attributes&quot;: [ &quot;db&quot;, &quot;qualifiedName&quot; ]
- }</li>
+ }
+</code></pre></li>
 </ul>
-<pre><code>
-![search-basic-hive_table-customers](https://atlas.apache.org/images/twiki/search-basic-hive_table-customers.png)
-
-- &#x5305;&#x542B;OR&#x6761;&#x4EF6;&#x7684;&#x591A;&#x4E2A;&#x5C5E;&#x6027;
-</code></pre><p>{
+<p><img src="https://atlas.apache.org/images/twiki/search-basic-hive_table-customers.png" alt="search-basic-hive_table-customers"></p>
+<ul>
+<li>&#x5305;&#x542B;OR&#x6761;&#x4EF6;&#x7684;&#x591A;&#x4E2A;&#x5C5E;&#x6027;</li>
+</ul>
+<pre><code>{
     &quot;typeName&quot;:               &quot;hive_table&quot;,
     &quot;excludeDeletedEntities&quot;: true,
     &quot;offset&quot;:                 0,
@@ -538,50 +538,50 @@
        ]
     },
     &quot;attributes&quot;: [ &quot;db&quot;, &quot;qualifiedName&quot; ]
-  }</p>
-<pre><code>![search-basic-hive_table-customers-or-provider](https://atlas.apache.org/images/twiki/search-basic-hive_table-customers-or-provider.png)
-
-- &#x5305;&#x542B;AND&#x6761;&#x4EF6;&#x7684;&#x591A;&#x4E2A;&#x5C5E;&#x6027;
-</code></pre><p>{
-     &quot;typeName&quot;:               &quot;hive_table&quot;,
-     &quot;excludeDeletedEntities&quot;: true,
-     &quot;offset&quot;:                 0,
-     &quot;limit&quot;:                  25,
-     &quot;entityFilters&quot;: {
-        &quot;condition&quot;: &quot;AND&quot;,
-        &quot;criterion&quot;: [
-           {
-              &quot;attributeName&quot;:  &quot;name&quot;,
-              &quot;operator&quot;:       &quot;contains&quot;,
-              &quot;attributeValue&quot;: &quot;customers&quot;
-           },
-           {
-              &quot;attributeName&quot;:  &quot;owner&quot;,
-              &quot;operator&quot;:       &quot;eq&quot;,
-              &quot;attributeValue&quot;: &quot;hive&quot;
-           }
-        ]
-     },
-     &quot;attributes&quot;: [ &quot;db&quot;, &quot;qualifiedName&quot; ]
-  }</p>
-<pre><code>
-![search-basic-hive_table-customers-owner_is_hive](https://atlas.apache.org/images/twiki/search-basic-hive_table-customers-owner_is_hive.png)
-
-##### &#x652F;&#x6301;&#x8FC7;&#x6EE4;&#x7684;&#x8FD0;&#x7B97;&#x7B26;
-- LT&#xFF08;&#x64CD;&#x4F5C;&#x7B26;&#xFF1A;&lt;&#xFF0C;lt&#xFF09;&#x4E0E;Numeric&#xFF0C;Date&#x5C5E;&#x6027;&#x4E00;&#x8D77;&#x4F7F;&#x7528;
-- GT&#xFF08;&#x64CD;&#x4F5C;&#x7B26;&#xFF1A;&gt;&#xFF0C;gt&#xFF09;&#x4E0E;Numeric&#xFF0C;Date&#x5C5E;&#x6027;&#x4E00;&#x8D77;&#x4F7F;&#x7528;
-- LTE&#xFF08;&#x64CD;&#x4F5C;&#x7B26;&#xFF1A;&lt;=&#xFF0C;lte&#xFF09;&#x4E0E;Numeric&#xFF0C;Date&#x5C5E;&#x6027;&#x4E00;&#x8D77;&#x4F7F;&#x7528;
-- GTE&#xFF08;&#x64CD;&#x4F5C;&#x7B26;&#xFF1A;&gt; =&#xFF0C;gte&#xFF09;&#x4E0E;Numeric&#xFF0C;Date&#x5C5E;&#x6027;&#x4E00;&#x8D77;&#x4F7F;&#x7528;
-- EQ&#xFF08;&#x64CD;&#x4F5C;&#x7B26;&#xFF1A;eq&#xFF0C;=&#xFF09;&#x4E0E;Numeric&#xFF0C;Date&#xFF0C;String&#x5C5E;&#x6027;&#x4E00;&#x8D77;&#x4F7F;&#x7528;
-- NEQ&#xFF08;&#x64CD;&#x4F5C;&#x7B26;&#xFF1A;neq&#xFF0C;&#xFF01;=&#xFF09;&#x4E0E;Numeric&#xFF0C;Date&#xFF0C;String&#x5C5E;&#x6027;&#x4E00;&#x8D77;&#x4F7F;&#x7528;
-- LIKE&#xFF08;&#x64CD;&#x4F5C;&#x7B26;&#xFF1A;like&#xFF0C;LIKE&#xFF09;&#x4E0E;String&#x5C5E;&#x6027;&#x4E00;&#x8D77;&#x4F7F;&#x7528;
-- STARTS_WITH&#xFF08;symbols&#xFF1A;startsWith&#xFF0C;STARTSWITH&#xFF09;&#x4E0E;String&#x5C5E;&#x6027;&#x4E00;&#x8D77;&#x4F7F;&#x7528;
-- ENDS_WITH&#xFF08;symbols&#xFF1A;endsWith&#xFF0C;ENDSWITH&#xFF09;&#x4E0E;String&#x5C5E;&#x6027;&#x4E00;&#x8D77;&#x4F7F;&#x7528;
-- CONTAINS&#xFF08;&#x64CD;&#x4F5C;&#x7B26;&#xFF1A;contains&#xFF0C;CONTAINS&#xFF09;&#x4E0E;String&#x5C5E;&#x6027;&#x4E00;&#x8D77;&#x4F7F;&#x7528;
-
-**CURL&#x793A;&#x4F8B;**
-</code></pre><p>curl -sivk -g
-   -u <user>:<password>
+  }
+</code></pre><p><img src="https://atlas.apache.org/images/twiki/search-basic-hive_table-customers-or-provider.png" alt="search-basic-hive_table-customers-or-provider"></p>
+<ul>
+<li>&#x5305;&#x542B;AND&#x6761;&#x4EF6;&#x7684;&#x591A;&#x4E2A;&#x5C5E;&#x6027;<pre><code>{
+   &quot;typeName&quot;:               &quot;hive_table&quot;,
+   &quot;excludeDeletedEntities&quot;: true,
+   &quot;offset&quot;:                 0,
+   &quot;limit&quot;:                  25,
+   &quot;entityFilters&quot;: {
+      &quot;condition&quot;: &quot;AND&quot;,
+      &quot;criterion&quot;: [
+         {
+            &quot;attributeName&quot;:  &quot;name&quot;,
+            &quot;operator&quot;:       &quot;contains&quot;,
+            &quot;attributeValue&quot;: &quot;customers&quot;
+         },
+         {
+            &quot;attributeName&quot;:  &quot;owner&quot;,
+            &quot;operator&quot;:       &quot;eq&quot;,
+            &quot;attributeValue&quot;: &quot;hive&quot;
+         }
+      ]
+   },
+   &quot;attributes&quot;: [ &quot;db&quot;, &quot;qualifiedName&quot; ]
+}
+</code></pre></li>
+</ul>
+<p><img src="https://atlas.apache.org/images/twiki/search-basic-hive_table-customers-owner_is_hive.png" alt="search-basic-hive_table-customers-owner_is_hive"></p>
+<h5 id="&#x652F;&#x6301;&#x8FC7;&#x6EE4;&#x7684;&#x8FD0;&#x7B97;&#x7B26;"><a name="&#x652F;&#x6301;&#x8FC7;&#x6EE4;&#x7684;&#x8FD0;&#x7B97;&#x7B26;" class="anchor-navigation-ex-anchor" href="#&#x652F;&#x6301;&#x8FC7;&#x6EE4;&#x7684;&#x8FD0;&#x7B97;&#x7B26;"><i class="fa fa-link" aria-hidden="true"></i></a><a name="&#x652F;&#x6301;&#x8FC7;&#x6EE4;&#x7684;&#x8FD0;&#x7B97;&#x7B26;" class="plugin-anchor" href="#&#x652F;&#x6301;&#x8FC7;&#x6EE4;&#x7684;&#x8FD0;&#x7B97;&#x7B26;"><i class="fa fa-link" aria-hidden="true"></i></a>&#x652F;&#x6301;&#x8FC7;&#x6EE4;&#x7684;&#x8FD0;&#x7B97;&#x7B26;</h5>
+<ul>
+<li>LT&#xFF08;&#x64CD;&#x4F5C;&#x7B26;&#xFF1A;&lt;&#xFF0C;lt&#xFF09;&#x4E0E;Numeric&#xFF0C;Date&#x5C5E;&#x6027;&#x4E00;&#x8D77;&#x4F7F;&#x7528;</li>
+<li>GT&#xFF08;&#x64CD;&#x4F5C;&#x7B26;&#xFF1A;&gt;&#xFF0C;gt&#xFF09;&#x4E0E;Numeric&#xFF0C;Date&#x5C5E;&#x6027;&#x4E00;&#x8D77;&#x4F7F;&#x7528;</li>
+<li>LTE&#xFF08;&#x64CD;&#x4F5C;&#x7B26;&#xFF1A;&lt;=&#xFF0C;lte&#xFF09;&#x4E0E;Numeric&#xFF0C;Date&#x5C5E;&#x6027;&#x4E00;&#x8D77;&#x4F7F;&#x7528;</li>
+<li>GTE&#xFF08;&#x64CD;&#x4F5C;&#x7B26;&#xFF1A;&gt; =&#xFF0C;gte&#xFF09;&#x4E0E;Numeric&#xFF0C;Date&#x5C5E;&#x6027;&#x4E00;&#x8D77;&#x4F7F;&#x7528;</li>
+<li>EQ&#xFF08;&#x64CD;&#x4F5C;&#x7B26;&#xFF1A;eq&#xFF0C;=&#xFF09;&#x4E0E;Numeric&#xFF0C;Date&#xFF0C;String&#x5C5E;&#x6027;&#x4E00;&#x8D77;&#x4F7F;&#x7528;</li>
+<li>NEQ&#xFF08;&#x64CD;&#x4F5C;&#x7B26;&#xFF1A;neq&#xFF0C;&#xFF01;=&#xFF09;&#x4E0E;Numeric&#xFF0C;Date&#xFF0C;String&#x5C5E;&#x6027;&#x4E00;&#x8D77;&#x4F7F;&#x7528;</li>
+<li>LIKE&#xFF08;&#x64CD;&#x4F5C;&#x7B26;&#xFF1A;like&#xFF0C;LIKE&#xFF09;&#x4E0E;String&#x5C5E;&#x6027;&#x4E00;&#x8D77;&#x4F7F;&#x7528;</li>
+<li>STARTS_WITH&#xFF08;symbols&#xFF1A;startsWith&#xFF0C;STARTSWITH&#xFF09;&#x4E0E;String&#x5C5E;&#x6027;&#x4E00;&#x8D77;&#x4F7F;&#x7528;</li>
+<li>ENDS_WITH&#xFF08;symbols&#xFF1A;endsWith&#xFF0C;ENDSWITH&#xFF09;&#x4E0E;String&#x5C5E;&#x6027;&#x4E00;&#x8D77;&#x4F7F;&#x7528;</li>
+<li>CONTAINS&#xFF08;&#x64CD;&#x4F5C;&#x7B26;&#xFF1A;contains&#xFF0C;CONTAINS&#xFF09;&#x4E0E;String&#x5C5E;&#x6027;&#x4E00;&#x8D77;&#x4F7F;&#x7528;</li>
+</ul>
+<p><strong>CURL&#x793A;&#x4F8B;</strong></p>
+<pre><code>curl -sivk -g
+   -u &lt;user&gt;:&lt;password&gt;
    -X POST
    -d &apos;{
            &quot;typeName&quot;:               &quot;hive_table&quot;,
@@ -607,9 +607,8 @@
            },
            &quot;attributes&quot;: [ &quot;db&quot;, &quot;qualifiedName&quot; ]
          }&apos;
-   <protocol>://<atlas_host>:<atlas_port>/api/atlas/v2/search/basic
-```</atlas_port></atlas_host></protocol></password></user></p>
-
+   &lt;protocol&gt;://&lt;atlas_host&gt;:&lt;atlas_port&gt;/api/atlas/v2/search/basic
+</code></pre>
                                 
                                 </section>
                             
@@ -648,7 +647,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"03-基本搜索","level":"1.4","depth":1,"next":{"title":"04-高级搜索✘","level":"1.5","depth":1,"ref":"","articles":[]},"previous":{"title":"02-类型系统​","level":"1.3","depth":1,"path":"02.类型系统.md","ref":"02.类型系统.md","articles":[]},"dir":"ltr"},"config":{"plugins":["sharing","splitter","-expandable-chapters-small","anchors","github","github-buttons","-donate","sharing-plus","anchor-navigation-ex","favicon","livereload"],"styles":{"website":"/styles/website.css"},"pluginsConfig":{"github":{"url":"https://github.com/mantoudev"},"livereload":{},"splitter":{},"search":{},"sharing-plus":{"qq":false,"all":["facebook","google","twitter","instapaper","linkedin","pocket","stumbleupon"],"douban":false,"facebook":true,"weibo":false,"instapaper":false,"whatsapp":false,"hatenaBookmark":false,"twitter":true,"messenger":false,"line":false,"vk":false,"pocket":true,"google":false,"viber":false,"stumbleupon":false,"qzone":false,"linkedin":false},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"anchor-navigation-ex":{"associatedWithSummary":true,"float":{"floatIcon":"fa fa-navicon","level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"mode":"float","multipleH1":true,"pageTop":{"level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"printLog":false,"showGoTop":true,"showLevel":false},"favicon":{"shortcut":"/source/images/favicon.jpg","bookmark":"/source/images/favicon.jpg","appleTouch":"/source/images/apple-touch-icon.jpg","appleTouchMore":{"120x120":"/source/images/apple-touch-icon.jpg","180x180":"/source/images/apple-touch-icon.jpg"}},"github-buttons":{"buttons":[{"user":"mantou","repo":"atlas_cn","type":"star","size":"small","count":true}]},"sharing":{"qq":false,"all":["google","facebook","weibo","twitter","qq","qzone","linkedin","pocket"],"douban":false,"facebook":false,"weibo":false,"instapaper":false,"whatsapp":false,"hatenaBookmark":false,"twitter":false,"messenger":false,"line":false,"vk":false,"pocket":false,"google":false,"viber":false,"stumbleupon":false,"qzone":false,"linkedin":false},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"theme":"default","author":"mantou","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Mantou Book","language":"zh-hans","links":{"sidebar":{"MantouDev":"https://mantoudev.com"}},"gitbook":"3.2.3","description":"吭哧吭哧"},"file":{"path":"03.基本搜索.md","mtime":"2018-11-30T08:54:40.927Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-11-30T08:57:23.654Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"03-基本搜索","level":"1.4","depth":1,"next":{"title":"04-高级搜索✘","level":"1.5","depth":1,"ref":"","articles":[]},"previous":{"title":"02-类型系统​","level":"1.3","depth":1,"path":"02.类型系统.md","ref":"02.类型系统.md","articles":[]},"dir":"ltr"},"config":{"plugins":["sharing","splitter","-expandable-chapters-small","anchors","github","github-buttons","-donate","sharing-plus","anchor-navigation-ex","favicon","livereload"],"styles":{"website":"/styles/website.css"},"pluginsConfig":{"github":{"url":"https://github.com/mantoudev"},"livereload":{},"splitter":{},"search":{},"sharing-plus":{"qq":false,"all":["facebook","google","twitter","instapaper","linkedin","pocket","stumbleupon"],"douban":false,"facebook":true,"weibo":false,"instapaper":false,"whatsapp":false,"hatenaBookmark":false,"twitter":true,"messenger":false,"line":false,"vk":false,"pocket":true,"google":false,"viber":false,"stumbleupon":false,"qzone":false,"linkedin":false},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"anchor-navigation-ex":{"associatedWithSummary":true,"float":{"floatIcon":"fa fa-navicon","level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"mode":"float","multipleH1":true,"pageTop":{"level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"printLog":false,"showGoTop":true,"showLevel":false},"favicon":{"shortcut":"/source/images/favicon.jpg","bookmark":"/source/images/favicon.jpg","appleTouch":"/source/images/apple-touch-icon.jpg","appleTouchMore":{"120x120":"/source/images/apple-touch-icon.jpg","180x180":"/source/images/apple-touch-icon.jpg"}},"github-buttons":{"buttons":[{"user":"mantou","repo":"atlas_cn","type":"star","size":"small","count":true}]},"sharing":{"qq":false,"all":["google","facebook","weibo","twitter","qq","qzone","linkedin","pocket"],"douban":false,"facebook":false,"weibo":false,"instapaper":false,"whatsapp":false,"hatenaBookmark":false,"twitter":false,"messenger":false,"line":false,"vk":false,"pocket":false,"google":false,"viber":false,"stumbleupon":false,"qzone":false,"linkedin":false},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"theme":"default","author":"mantou","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Mantou Book","language":"zh-hans","links":{"sidebar":{"MantouDev":"https://mantoudev.com"}},"gitbook":"3.2.3","description":"吭哧吭哧"},"file":{"path":"03.基本搜索.md","mtime":"2018-11-30T09:03:35.321Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-11-30T09:02:24.652Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
