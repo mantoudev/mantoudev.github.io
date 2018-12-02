@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="机器学习,梯度下降,">
+  <meta name="keywords" content="元数据管理,atlas,血缘,">
 
 
 
@@ -79,27 +79,18 @@
 
 
 
-<meta name="description" content="1. Gradient Descent（梯度下降）梯度下降算法是很常用的算法，可以将代价函数J最小化。它不仅被用在线性回归上，也被广泛应用于机器学习领域中的众多领域。">
-<meta name="keywords" content="机器学习,梯度下降">
+<meta name="description" content="1. 介绍Apache Atlas使用各种系统并与之交互，为数据管理员提供元数据管理和数据血缘信息。通过适当地选择和配置这些依赖关系，可以使用Atlas实现高度的服务可用性。本文档介绍了Atlas中的高可用性支持状态，包括其功能和当前限制，以及实现此高级别可用性所需的配置。">
+<meta name="keywords" content="元数据管理,atlas,血缘">
 <meta property="og:type" content="article">
-<meta property="og:title" content="[机器学习Lesson 3]梯度下降算法">
-<meta property="og:url" content="http://mantoudev.com/2018/03/26/[机器学习Lesson 3]梯度下降算法/index.html">
+<meta property="og:title" content="使用Atlas进行元数据管理之容错与高可用">
+<meta property="og:url" content="http://mantoudev.com/2018/12/01/使用Atlas进行元数据管理之容错和高可用/index.html">
 <meta property="og:site_name" content="MantouDev">
-<meta property="og:description" content="1. Gradient Descent（梯度下降）梯度下降算法是很常用的算法，可以将代价函数J最小化。它不仅被用在线性回归上，也被广泛应用于机器学习领域中的众多领域。">
+<meta property="og:description" content="1. 介绍Apache Atlas使用各种系统并与之交互，为数据管理员提供元数据管理和数据血缘信息。通过适当地选择和配置这些依赖关系，可以使用Atlas实现高度的服务可用性。本文档介绍了Atlas中的高可用性支持状态，包括其功能和当前限制，以及实现此高级别可用性所需的配置。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://s1.ax2x.com/2018/04/08/IPxlB.png">
-<meta property="og:image" content="https://s1.ax2x.com/2018/04/08/Ia9VQ.png">
-<meta property="og:image" content="https://s1.ax2x.com/2018/04/08/Ia32E.md.png">
-<meta property="og:image" content="https://s1.ax2x.com/2018/04/08/IaHFz.png">
-<meta property="og:image" content="https://s1.ax2x.com/2018/04/08/IaTsS.png">
-<meta property="og:image" content="https://s1.ax2x.com/2018/04/09/INpC2.png">
-<meta property="og:image" content="http://wx2.sinaimg.cn/mw690/0060lm7Tly1fq6tgs5x0bj309s05a3yt.jpg">
-<meta property="og:image" content="https://s1.ax1x.com/2018/04/09/CFFmXn.png">
-<meta property="og:updated_time" content="2018-11-28T11:08:53.951Z">
+<meta property="og:updated_time" content="2018-12-02T09:35:19.956Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="[机器学习Lesson 3]梯度下降算法">
-<meta name="twitter:description" content="1. Gradient Descent（梯度下降）梯度下降算法是很常用的算法，可以将代价函数J最小化。它不仅被用在线性回归上，也被广泛应用于机器学习领域中的众多领域。">
-<meta name="twitter:image" content="https://s1.ax2x.com/2018/04/08/IPxlB.png">
+<meta name="twitter:title" content="使用Atlas进行元数据管理之容错与高可用">
+<meta name="twitter:description" content="1. 介绍Apache Atlas使用各种系统并与之交互，为数据管理员提供元数据管理和数据血缘信息。通过适当地选择和配置这些依赖关系，可以使用Atlas实现高度的服务可用性。本文档介绍了Atlas中的高可用性支持状态，包括其功能和当前限制，以及实现此高级别可用性所需的配置。">
 
 
 
@@ -129,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://mantoudev.com/2018/03/26/[机器学习Lesson 3]梯度下降算法/">
+  <link rel="canonical" href="http://mantoudev.com/2018/12/01/使用Atlas进行元数据管理之容错和高可用/">
 
 
 
 
 
-  <title>[机器学习Lesson 3]梯度下降算法 | MantouDev</title>
+  <title>使用Atlas进行元数据管理之容错与高可用 | MantouDev</title>
   
 
 
@@ -313,7 +304,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://mantoudev.com/2018/03/26/[机器学习Lesson 3]梯度下降算法/">
+    <link itemprop="mainEntityOfPage" href="http://mantoudev.com/2018/12/01/使用Atlas进行元数据管理之容错和高可用/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Mantou">
@@ -330,7 +321,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">[机器学习Lesson 3]梯度下降算法</h1>
+          <h1 class="post-title" itemprop="name headline">使用Atlas进行元数据管理之容错与高可用</h1>
         
 
         <div class="post-meta">
@@ -342,8 +333,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-26T23:33:00+08:00">
-                2018-03-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-01T12:19:40+08:00">
+                2018-12-01
               </time>
             
 
@@ -365,8 +356,19 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/机器学习/" itemprop="url" rel="index">
-                    <span itemprop="name">机器学习</span>
+                  <a href="/categories/BigData/" itemprop="url" rel="index">
+                    <span itemprop="name">BigData</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/BigData/元数据管理/" itemprop="url" rel="index">
+                    <span itemprop="name">元数据管理</span>
                   </a>
                 </span>
 
@@ -382,7 +384,7 @@
 
           
           
-             <span id="/2018/03/26/[机器学习Lesson 3]梯度下降算法/" class="leancloud_visitors" data-flag-title="[机器学习Lesson 3]梯度下降算法">
+             <span id="/2018/12/01/使用Atlas进行元数据管理之容错和高可用/" class="leancloud_visitors" data-flag-title="使用Atlas进行元数据管理之容错与高可用">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -407,7 +409,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.3k
+                  3.4k
                 </span>
               
 
@@ -423,7 +425,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  4
+                  12
                 </span>
               
             </div>
@@ -444,46 +446,119 @@
       
 
       
-        <h2 id="1-Gradient-Descent（梯度下降）"><a href="#1-Gradient-Descent（梯度下降）" class="headerlink" title="1. Gradient Descent（梯度下降）"></a>1. Gradient Descent（梯度下降）</h2><p>梯度下降算法是很常用的算法，可以将代价函数J最小化。它不仅被用在线性回归上，也被广泛应用于机器学习领域中的众多领域。</p>
-<a id="more"></a>
-<h3 id="1-1-线性回归问题应用"><a href="#1-1-线性回归问题应用" class="headerlink" title="1.1 线性回归问题应用"></a>1.1 线性回归问题应用</h3><p>我们有一个函数<code>J(θ0,θ1)</code>，要使其最小化<code>minJ(θ0,θ01)</code>:</p>
-<p><img src="https://s1.ax2x.com/2018/04/08/IPxlB.png" alt="&lt;图1&gt;"></p>
-<p><strong>Outline</strong></p>
+        <h2 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1. 介绍"></a>1. 介绍</h2><p>Apache Atlas使用各种系统并与之交互，为数据管理员提供元数据管理和数据血缘信息。通过适当地选择和配置这些依赖关系，可以使用Atlas实现高度的服务可用性。本文档介绍了Atlas中的高可用性支持状态，包括其功能和当前限制，以及实现此高级别可用性所需的配置。<br><a id="more"></a></p>
+<p>在高级架构章节(请参阅我翻译的<a href="https://mantoudev.com/2018/11/29/Atlas%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/">《Atlas开发指南(中文版)》</a>)概述了构成Atlas的各种组件。下面提到的各种组件的选项从上面的页面中获取上下文，在继续阅读本页之前值得一看。</p>
+<h2 id="2-Atlas-Web-Service"><a href="#2-Atlas-Web-Service" class="headerlink" title="2. Atlas Web Service"></a>2. Atlas Web Service</h2><p>目前，Atlas Web Service有一个限制，即它一次只能有一个活动实例。在早期版本的Atlas中，可以配置备份实例并使其可用。但是，需要手动故障转移才能使此备份实例处于活动状态。</p>
+<p>从此版本开始，Atlas将通过自动故障转移支持活动(active)/被动(passive)配置中的多个Atlas Web服务实例。这意味着用户可以同时在不同的物理主机上部署和启动Atlas Web Service的多个实例。其中一个实例将自动选为“active”实例以服务用户请求。其他人将自动被视为“passive”。如果“active”实例因故意停止或由于意外故障而变得不可用，则其他实例之一将自动被选为“active”实例并开始为用户请求提供服务。</p>
+<p>“active”实例是唯一可以正确响应用户请求的实例。它可以创建，删除，修改或响应元数据对象上的查询。 “passive”实例将接受用户请求，但会使用HTTP重定向将其重定向到当前已知的“active”实例。具体而言，passive实例本身不会响应对元数据对象的任何查询。但是，所有实例（active和passive）都将响应返回有关该实例的信息的管理请求。</p>
+<p>在高可用性模式下配置时，用户可以获得以下操作收益：</p>
 <ul>
-<li>对θ0,θ1开始进行一些猜测<br>通常将初θ0,θ1初始化为0</li>
-<li>在梯度算法中，要做的就是不停的一点点改变θ0和θ1试图通过这种改变使得J(θ0,θ1)变小，直到找到J的最小值或者局部最小值。</li>
+<li><strong>维护间隔期间不间断的服务</strong>：如果需要关闭Atlas Web Service的活动实例以进行维护，则另一个实例将自动变为活动状态并可以为请求提供服务。</li>
+<li><strong>意外故障时的不间断服务</strong>：如果Atlas Web Service的活动实例因软件或硬件错误而失败，则另一个实例将自动变为活动状态并可以为请求提供服务。</li>
 </ul>
-<h3 id="1-2-梯度算法工作原理"><a href="#1-2-梯度算法工作原理" class="headerlink" title="1.2 梯度算法工作原理"></a>1.2 梯度算法工作原理</h3><p><img src="https://s1.ax2x.com/2018/04/08/Ia9VQ.png" alt="&lt;图2&gt;"></p>
-<p>现在我们把这个图像想象为一座山，想像类似这样的景色 ：公园中有两座山，想象一下你正站立在山的这一点上 站立在你想象的公园这座红色山上。在梯度下降算法中，我们要做的就是旋转360度，看看我们的周围，并问自己，我要在某个方向上，用小碎步尽快下山。如果我想要下山。如果我想尽快走下山，这些小碎步需要朝什么方向? 如果我们站在山坡上的这一点，你看一下周围，你会发现最佳的下山方向，大约是那个方向。  </p>
-<p>现在你在山上的新起点上 你再看看周围 然后再一次想想 我应该从什么方向迈着小碎步下山? 然后你按照自己的判断又迈出一步 往那个方向走了一步 然后重复上面的步骤。从这个新的点，你环顾四周并决定从什么方向将会最快下山。然后又迈进了一小步，并依此类推，直到你接近这里，直到局部最低点的位置。</p>
-<p><img src="https://s1.ax2x.com/2018/04/08/Ia32E.md.png" alt="image"></p>
-<p>现在想象一下，我们在刚才的右边一些的位置，对梯度下降进行初始化。想象我们在右边高一些的这个点。开始使用梯度下降。如果你重复上述步骤，停留在该点，并环顾四周，往下降最快的方向迈出一小步，然后环顾四周又迈出一步，然后如此往复。如果你从右边不远处开始梯度下降算法将会带你来到这个右边的第二个局部最优处。 如果从刚才的第一个点出发，你会得到这个局部最优解 但如果你的起始点偏移了一些，起始点的位置略有不同 你会得到一个非常不同的局部最优解。这就是梯度下降算法的一个特点。</p>
-<h3 id="1-3-梯度下降算法定义。"><a href="#1-3-梯度下降算法定义。" class="headerlink" title="1.3 梯度下降算法定义。"></a>1.3 梯度下降算法定义。</h3><p><img src="https://s1.ax2x.com/2018/04/08/IaHFz.png" alt="&lt;图4&gt;"></p>
+<p>在以下小节中，我们将介绍为Atlas Web Service设置高可用性所需的步骤。我们还描述了如何设计部署和客户端以利用此功能。最后，我们描述了底层实现的一些细节。</p>
+<h3 id="2-1-在Atlas中设置高可用性功能"><a href="#2-1-在Atlas中设置高可用性功能" class="headerlink" title="2.1 在Atlas中设置高可用性功能"></a>2.1 在Atlas中设置高可用性功能</h3><p>设置高可用性功能必须满足以下先决条件。</p>
 <ul>
-<li><code>:=</code>：赋值符号（Assignment）.</li>
-<li><code>α</code>：这里的α是一个数字，被称为学习速率(learning rate)。在梯度下降算法中，它控制了我们下山时会迈出多大的步子。</li>
-<li><p>微分项。</p>
-<p>在梯度下降中,我们要更新θ0和θ1。当 j=0 和 j=1 时 会产生更新。所以你将更新J、θ0还有θ1。实现梯度下降算法的微妙之处是，在这个表达式中，如果你要更新这个等式，你需要同时更新 θ0和θ1。</p>
+<li>确保在一组计算机上安装Apache Zookeeper（建议至少使用3台服务器进行生产）。</li>
+<li>选择2个或更多物理计算机以运行Atlas Web Service实例。这些机器定义了我们称之为Atlas的“服务器集合”。</li>
+</ul>
+<p>要在Atlas中设置高可用性，必须在<code>atlas-application.properties</code>文件中定义一些配置选项。虽然在配置页面中定义了完整的配置项列表，但本节列出了一些主要选项。</p>
+<ul>
+<li>高可用性是Atlas中的可选功能。因此，必须通过将配置选项<code>atlas.server.ha.enabled</code>设置为<code>true</code>来启用它。</li>
+<li>接下来，定义标识符列表，每个物理机一个用于Atlas Web Service实例。这些标识符可以是简单的字符串，如id1，id2等。它们应该是唯一的，不应包含逗号。</li>
+<li>将这些标识符的逗号分隔列表定义为选项<code>atlas.server.ids</code>的值。</li>
+<li><p>对于每台物理计算机，将IP地址/主机名和端口列为配置<code>atlas.server.address.id</code>的值，其中id表示此物理计算机的标识符字符串。</p>
+<ul>
+<li>例如，如果您选择了2台主机名为<code>host1.company.com</code>和<code>host2.company.com</code>的计算机，则可以按如下方式定义配置选项：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">atlas.server.ids=id1,id2</span><br><span class="line">atlas.server.address.id1=host1.company.com:21000</span><br><span class="line">atlas.server.address.id2=host2.company.com:21000</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<p><img src="https://s1.ax2x.com/2018/04/08/IaTsS.png" alt="&lt;图5&gt;"></p>
-<p>θ0和θ1需要同步更新，右侧是非同步更新，错误。</p>
-<h3 id="1-4-梯度下降和代价函数"><a href="#1-4-梯度下降和代价函数" class="headerlink" title="1.4 梯度下降和代价函数"></a>1.4 梯度下降和代价函数</h3><p> 梯度下降是很常用的算法，它不仅被用在线性回归上 和线性回归模型还有平方误差代价函数。<br> 当具体应用到线性回归的情况下,可以推导出一种新形式的梯度下降法方程：</p>
-<p> <img src="https://s1.ax2x.com/2018/04/09/INpC2.png" alt="image"></p>
-<ul>
-<li>m：训练集的大小</li>
-<li>θ0与θ1同步改变</li>
-<li>xi和yi：给定的训练集的值(数据)。</li>
+</li>
+<li><p>定义将由Atlas高可用性功能使用的Zookeeper集群。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">atlas.server.ha.zookeeper.connect=zk1.company.com:2181,zk2.company.com:2181,zk3.company.com:2181</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>您可以查看为高可用性功能定义的其他配置选项，并根据需要在atlas-application.properties文件中进行设置。</p>
+</li>
+<li>对于生产环境，还必须在高可用性模式下设置Atlas所依赖的组件。这将在以下部分中详细介绍。按照这些说明设置和配置它们。</li>
+<li>在所选物理计算机上安装Atlas软件。</li>
+<li>将使用上述步骤创建的atlas-application.properties文件复制到所有计算机的配置目录中。</li>
+<li>启动从属组件。</li>
+<li>启动Atlas Web Service的每个实例。</li>
 </ul>
-<p>我们已经分离出两例θj：θ0和θ1为独立的方程;在θ1中，在推导最后乘以Xi。以下是推导∂/∂θjJ(θ)的一个例子:</p>
-<p><img src="http://wx2.sinaimg.cn/mw690/0060lm7Tly1fq6tgs5x0bj309s05a3yt.jpg" alt="image"></p>
-<p>这一切的关键是，如果我们从猜测我们的假设开始，然后反复应用这些梯度下降方程，我们的假设将变得越来越精确。</p>
-<p>因此，这只是原始成本函数J的梯度下降。这个方法是在每个步骤的每个训练集中的每一个例子，被称为批量梯度下降。注意，虽然梯度下降一般容易受到局部极小值的影响，但我们在线性回归中所提出的优化问题只有一个全局，没有其他局部最优解，因此梯度下降总是收敛（假定学习率α不是太大）到全局最小值。实际上，j是凸二次函数。这里是一个梯度下降的例子，它是为了最小化二次函数而运行的。</p>
-<p><img src="https://s1.ax1x.com/2018/04/09/CFFmXn.png" alt="image"></p>
-<p>上面所示的椭圆是二次函数的轮廓图。也表明是通过梯度下降的轨迹，它被初始化为（48,30）。X在图（连接的直线）的标志，θ梯度穿过它收敛到最小的连续值。</p>
-<hr>
-<p>本文资料部分来源于吴恩达 (Andrew Ng) 博士的斯坦福大学机器学习公开课视频教程。   </p>
-<p>[1]网易云课堂机器学习课程：<br><a href="http://open.163.com/special/opencourse/machinelearning.html" target="_blank" rel="noopener">http://open.163.com/special/opencourse/machinelearning.html</a><br>[2]coursera课程：<br><a href="https://www.coursera.org/learn/machine-learning/" target="_blank" rel="noopener">https://www.coursera.org/learn/machine-learning/</a></p>
+<p>要验证高可用性是否正常，请在安装了Atlas Web Service的每个实例上运行以下脚本。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ATLAS_HOME/bin/atlas_admin.py -status</span><br></pre></td></tr></table></figure></p>
+<p>此脚本可以打印以下值之一作为响应：</p>
+<ul>
+<li><strong>ACTIVE</strong>：此实例处于活动状态，可以响应用户请求。</li>
+<li><strong>PASSIVE</strong>：这个实例是被动的。它会将收到的任何用户请求重定向到当前活动实例。</li>
+<li><strong>BECOMING_ACTIVE</strong>：如果服务器正在转换为ACTIVE实例，则会打印出来。服务器无法在此状态下为任何元数据用户请求提供服务。</li>
+<li><strong>BECOMING_PASSIVE</strong>：如果服务器正在转换为PASSIVE实例，则会打印出来。服务器无法在此状态下为任何元数据用户请求提供服务。</li>
+</ul>
+<p>在正常操作情况下，这些实例中只有一个应该打印值ACTIVE作为对脚本的响应，而其他实例将打印PASSIVE。</p>
+<h3 id="2-2-配置客户端以使用高可用性功能"><a href="#2-2-配置客户端以使用高可用性功能" class="headerlink" title="2.2 配置客户端以使用高可用性功能"></a>2.2 配置客户端以使用高可用性功能</h3><p>可以通过两种方式访问​​Atlas Web Service：</p>
+<ul>
+<li><strong>使用Atlas Web UI</strong>：这是一个基于浏览器的客户端，可用于查询存储在Atlas中的元数据。</li>
+<li><strong>使用Atlas REST API</strong>：由于Atlas公开了RESTful API，因此可以使用任何标准REST客户端，包括其他应用程序中的库。实际上，Atlas附带了一个名为AtlasClient的客户端，可以作为构建REST客户端访问的示例。</li>
+</ul>
+<p>为了利用客户端中的高可用性功能，有两种选择。</p>
+<h4 id="1-使用中间代理"><a href="#1-使用中间代理" class="headerlink" title="(1)使用中间代理"></a>(1)使用中间代理</h4><p>实现对Atlas的高可用性访问的最简单的解决方案是安装和配置一些中间代理，该代理具有基于状态透明地切换服务的能力。一个这样的代理解决方案是<a href="http://www.haproxy.org/" target="_blank" rel="noopener">HAProxy</a>。</p>
+<p>以下是可以使用的示例HAProxy配置。请注意，此提供仅用于说明，而不是推荐的生产配置。请参阅HAProxy文档以获取适当的说明。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">frontend atlas_fe</span><br><span class="line">  bind *:41000</span><br><span class="line">  default_backend atlas_be</span><br><span class="line"></span><br><span class="line">backend atlas_be</span><br><span class="line">  mode http</span><br><span class="line">  option httpchk get /api/atlas/admin/status</span><br><span class="line">  http-check expect string ACTIVE</span><br><span class="line">  balance roundrobin</span><br><span class="line">  server host1_21000 host1:21000 check</span><br><span class="line">  server host2_21000 host2:21000 check backup</span><br><span class="line"></span><br><span class="line">listen atlas</span><br><span class="line">  bind localhost:42000</span><br></pre></td></tr></table></figure></p>
+<p>上面的配置绑定HAProxy以监听端口41000以获取传入的客户端连接。然后，它会根据HTTP状态检查将连接路由到主机host1或host2。状态检查是使用REST URL <code>/api/atlas/admin/status</code>上的HTTP GET完成的，仅当HTTP响应包含字符串ACTIVE时才被视为成功。</p>
+<h4 id="2-使用活动实例自动检测"><a href="#2-使用活动实例自动检测" class="headerlink" title="(2)使用活动实例自动检测"></a>(2)使用活动实例自动检测</h4><p>如果不想设置和管理单独的代理，则使用高可用性功能的另一个选项，是构建能够检测状态和重试操作的客户端应用程序。在这样的设置中，可以使用形成整体的所有Atlas Web Service实例的URL启动客户端应用程序。然后，客户端应在每个上面调用REST <code>URL/api/atlas/admin/status</code>以确定哪个是活动实例。 Active实例的响应形式为<code>{Status：ACTIVE}</code>。此外，当客户端在操作过程中面临任何异常时，它应该再次确定哪些剩余URL处于活动状态并重试该操作。</p>
+<p>Atlas附带的AtlasClient类可用作示例客户端库，该库实现处理集合并选择正确的Active Server实例的逻辑。</p>
+<p>Atlas中的实用程序（如<code>quick_start.py</code>和<code>import-hive.sh</code>）可以配置为与多个服务器URL一起运行。在此模式下启动时，AtlasClient会自动选择并使用当前活动实例。如果在两者之间设置了代理，则在运行<code>quick_start.py</code>或<code>import-hive.sh</code>时可以使用其地址。</p>
+<h3 id="2-3-Atlas高可用性的实现细节"><a href="#2-3-Atlas高可用性的实现细节" class="headerlink" title="2.3 Atlas高可用性的实现细节"></a>2.3 Atlas高可用性的实现细节</h3><p>Atlas高可用性工作在主JIRA <a href="https://issues.apache.org/jira/browse/ATLAS-510" target="_blank" rel="noopener">ATLAS-510</a>下进行跟踪。在其下提交的JIRA提供了有关如何实施高可用性功能的详细信息。在高层次上，可以调出以下几点：</p>
+<ul>
+<li>自动选择Active实例，以及通过领导者选举算法自动故障转移到新的Active实例。</li>
+<li>对于领导者选举，我们使用<a href="http://curator.apache.org/curator-recipes/leader-latch.html" target="_blank" rel="noopener">Leader Latch Recipe</a> of <a href="http://curator.apache.org/" target="_blank" rel="noopener">Apache Curator</a>。</li>
+<li>Active实例是唯一一个在后端存储中初始化，修改或读取状态以保持一致的实例。</li>
+<li>此外，当实例被选为活动时，它会刷新来自后端存储的任何缓存信息以获取最新信息。</li>
+<li>servlet过滤器确保只有活动实例服务用户请求。如果被动实例接收到这些请求，它会自动将它们重定向到当前活动实例。</li>
+</ul>
+<h2 id="3-元数据存储"><a href="#3-元数据存储" class="headerlink" title="3. 元数据存储"></a>3. 元数据存储</h2><p>Atlas使用JanusGraph存储和管理元数据。默认情况下，Atlas使用独立的HBase实例作为JanusGraph的底层存储。为了为元数据存储提供HA，我们建议将Atlas配置为使用分布式HBase作为JanusGraph的底层存储。要将Atlas配置为在HA模式下使用HBase，请执行以下操作：</p>
+<ul>
+<li>选择在HA模式下设置的现有HBase群集，以在Atlas（OR）中进行配置在HA模式下设置新的HBase群集。<ul>
+<li>如果为Atlas设置HBase，请按照Atlas官网“<a href="https://atlas.apache.org/InstallationSteps.html" target="_blank" rel="noopener">Installation Steps</a>”，列出的HBase的相关设置说明进行操作。</li>
+</ul>
+</li>
+<li>建议在使用Zookeeper进行协调的不同物理主机上的群集中使用多个HBase主服务器（至少2个），以提供HBase的冗余和高可用性。</li>
+<li>有关在<code>atlas.properties</code>中配置以使用HBase设置Atlas的选项，请参阅我翻译的<a href="https://mantoudev.com/2018/11/29/Atlas%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/">《Atlas开发指南(中文版)》</a>中“配置”章节。</li>
+</ul>
+<h2 id="4-索引存储"><a href="#4-索引存储" class="headerlink" title="4. 索引存储"></a>4. 索引存储</h2><p>如上所述，Atlas通过JanusGraph索引元数据以支持全文搜索查询。为了给索引存储提供HA，我们建议将Atlas配置为使用<code>Solr</code>或<code>Elasticsearch</code>作为JanusGraph的索引存储支撑。</p>
+<h3 id="4-1-Solr"><a href="#4-1-Solr" class="headerlink" title="4.1 Solr"></a>4.1 Solr</h3><p>要将Atlas配置为在HA模式下使用Solr，请执行以下操作：</p>
+<ul>
+<li>选择HA模式下的现有SolrCloud群集设置以在Atlas中配置（OR）设置新的SolrCloud群集。<ul>
+<li>确保Solr在至少2个物理主机上启用以实现冗余，并且每个主机都运行Solr节点。</li>
+<li>建议将冗余数量设置为至少2个副本。</li>
+</ul>
+</li>
+<li>创建Atlas所需的SolrCloud集合，详见Atlas官网“<a href="https://atlas.apache.org/InstallationSteps.html" target="_blank" rel="noopener">Installation Steps</a>”。</li>
+<li>有关在atlas.properties中配置以使用Solr设置Atlas的选项，请参阅我翻译的<a href="https://mantoudev.com/2018/11/29/Atlas%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/">《Atlas开发指南(中文版)》</a>的文档中“配置”章节。</li>
+</ul>
+<h3 id="4-2-Elasticsearch"><a href="#4-2-Elasticsearch" class="headerlink" title="4.2 Elasticsearch"></a>4.2 Elasticsearch</h3><p>要将Atlas配置为在HA模式下使用Elasticsearch，请执行以下操作：</p>
+<ul>
+<li>选择现有的Elasticsearch集群设置，（或）设置新的集群Elasticsearch集群。</li>
+<li>确保Elasticsearch在至少五个物理主机上启用以实现冗余。</li>
+<li>建议设置分片数量为3</li>
+<li>有关在atlas.properties中配置以使用Elasticsearch设置Atlas的选项，请参阅我翻译的<a href="https://mantoudev.com/2018/11/29/Atlas%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/">《Atlas开发指南(中文版)》</a>的文档中“配置”章节。</li>
+</ul>
+<h2 id="5-通知服务"><a href="#5-通知服务" class="headerlink" title="5. 通知服务"></a>5. 通知服务</h2><p>来自Hook的元数据通知事件通过写入名为<code>ATLAS_HOOK</code>的Kafka Topic发送到Atlas。同样，从Atlas到其他集成组件（如Ranger）的事件也会写入名为<code>ATLAS_ENTITIES</code>的Kafka Topic。由于Kafka持久化这些消息，即使消费者因发送事件而关闭，事件也不会丢失。此外，我们建议Kafka也设置容错，以便它具有更高的可用性保证。要将Atlas配置为在HA模式下使用Kafka，请执行以下操作：</p>
+<ul>
+<li>选择在HA模式下设置的现有Kafka群集，以在Atlas（OR）中配置设置新的Kafka群集。</li>
+<li><p>建议群集中不同的Kafka代理在不同的物理主机上使用Zookeeper进行协调，以提供Kafka的冗余和高可用性。</p>
+<ul>
+<li>设置至少2个物理主机以实现冗余，每个主机托管一个Kafka代理。</li>
+</ul>
+</li>
+<li><p>为Atlas使用设置Kafka主题：</p>
+<ul>
+<li>ATLAS主题的分区数应设置为1（numPartitions）</li>
+<li>确定Kafka主题的副本数量：将此设置为至少2以实现冗余。</li>
+<li>运行以下命令：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper &lt;list of zookeeper host:port entries&gt; --topic ATLAS_HOOK --replication-factor &lt;numReplicas&gt; --partitions 1</span><br><span class="line">      $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper &lt;list of zookeeper host:port entries&gt; --topic ATLAS_ENTITIES --replication-factor &lt;numReplicas&gt; --partitions 1</span><br><span class="line">      Here KAFKA_HOME points to the Kafka installation directory.</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<p>在<code>atlas-application.properties</code>中，设置以下配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">atlas.notification.embedded=false</span><br><span class="line">    atlas.kafka.zookeeper.connect=&lt;comma separated list of servers forming Zookeeper quorum used by Kafka&gt;</span><br><span class="line">    atlas.kafka.bootstrap.servers=&lt;comma separated list of Kafka broker endpoints in host:port form&gt; - Give at least 2 for redundancy.</span><br></pre></td></tr></table></figure></p>
+<h2 id="6-问题"><a href="#6-问题" class="headerlink" title="6. 问题"></a>6. 问题</h2><p>如果托管Atlas表的HBase region servers挂掉，Atlas将无法存储或检索HBase中的元数据，直到它们重新联机。</p>
 
       
     </div>
@@ -502,8 +577,8 @@
   <script src="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.min.js"></script>
   <link rel="stylesheet" type="text/css" href="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.mini.css">
   <p><span>文章作者:</span><a href="/" title="访问 Mantou 的个人博客">Mantou</a></p>
-  <p><span>最后更新:</span>2018年11月28日 19:11:53</p>
-  <p><span>原始链接:</span><a href="/2018/03/26/[机器学习Lesson 3]梯度下降算法/" title="[机器学习Lesson 3]梯度下降算法">http://mantoudev.com/2018/03/26/[机器学习Lesson 3]梯度下降算法/</a></p>
+  <p><span>最后更新:</span>2018年12月02日 17:12:19</p>
+  <p><span>原始链接:</span><a href="/2018/12/01/使用Atlas进行元数据管理之容错和高可用/" title="使用Atlas进行元数据管理之容错与高可用">http://mantoudev.com/2018/12/01/使用Atlas进行元数据管理之容错和高可用/</a></p>
   <p><span>版权声明:</span>本博客所有文章除特别声明外，均采用 <i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank" title="Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)"> BY-NC-SA 3.0 许可协议</a>，转载请注明出处！</p>
 </div>
 
@@ -550,9 +625,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+            <a href="/tags/元数据管理/" rel="tag"># 元数据管理</a>
           
-            <a href="/tags/梯度下降/" rel="tag"># 梯度下降</a>
+            <a href="/tags/atlas/" rel="tag"># atlas</a>
+          
+            <a href="/tags/血缘/" rel="tag"># 血缘</a>
           
         </div>
       
@@ -565,8 +642,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/03/26/[机器学习Lesson 2]代价函数之线性回归算法/" rel="next" title="[机器学习Lesson 2]代价函数之线性回归算法">
-                <i class="fa fa-chevron-left"></i> [机器学习Lesson 2]代价函数之线性回归算法
+              <a href="/2018/11/27/使用Atlas进行元数据管理之Glossary(术语)/" rel="next" title="使用Atlas进行元数据管理之Glossary(术语)">
+                <i class="fa fa-chevron-left"></i> 使用Atlas进行元数据管理之Glossary(术语)
               </a>
             
           </div>
@@ -575,8 +652,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/04/11/[机器学习实战]K-近邻算法/" rel="prev" title="[机器学习实战]K-近邻算法">
-                [机器学习实战]K-近邻算法 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/12/02/Atlas开发指南(中文版)/" rel="prev" title="Atlas开发指南(中文版)">
+                Atlas开发指南(中文版) <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -767,7 +844,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Gradient-Descent（梯度下降）"><span class="nav-text">1. Gradient Descent（梯度下降）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-线性回归问题应用"><span class="nav-text">1.1 线性回归问题应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-梯度算法工作原理"><span class="nav-text">1.2 梯度算法工作原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-梯度下降算法定义。"><span class="nav-text">1.3 梯度下降算法定义。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-梯度下降和代价函数"><span class="nav-text">1.4 梯度下降和代价函数</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-介绍"><span class="nav-text">1. 介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Atlas-Web-Service"><span class="nav-text">2. Atlas Web Service</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-在Atlas中设置高可用性功能"><span class="nav-text">2.1 在Atlas中设置高可用性功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-配置客户端以使用高可用性功能"><span class="nav-text">2.2 配置客户端以使用高可用性功能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-使用中间代理"><span class="nav-text">(1)使用中间代理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-使用活动实例自动检测"><span class="nav-text">(2)使用活动实例自动检测</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-Atlas高可用性的实现细节"><span class="nav-text">2.3 Atlas高可用性的实现细节</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-元数据存储"><span class="nav-text">3. 元数据存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-索引存储"><span class="nav-text">4. 索引存储</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-Solr"><span class="nav-text">4.1 Solr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-Elasticsearch"><span class="nav-text">4.2 Elasticsearch</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-通知服务"><span class="nav-text">5. 通知服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-问题"><span class="nav-text">6. 问题</span></a></li></ol></div>
             
 
           </div>
