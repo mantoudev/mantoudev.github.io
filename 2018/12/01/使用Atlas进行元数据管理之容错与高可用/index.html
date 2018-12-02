@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="1. 介绍Apache Atlas使用各种系统并与之交互，为数据管理员提供元数据管理和数据血缘信息。通过适当地选择和配置这些依赖关系，可以使用Atlas实现高度的服务可用性。本文档介绍了Atlas中的高可用性支持状态，包括其功能和当前限制，以及实现此高级别可用性所需的配置。">
+<meta name="description" content="1. 介绍Apache Atlas使用各种系统并与之交互，为数据管理员提供元数据管理和数据血缘信息。通过适当地选择和配置这些依赖关系，可以使用Atlas实现服务的高可用性。本文档介绍了Atlas中的高可用性支持状态，包括其功能和当前限制，以及实现此高级别可用性所需的配置。">
 <meta name="keywords" content="元数据管理,atlas,血缘">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用Atlas进行元数据管理之容错与高可用">
-<meta property="og:url" content="http://mantoudev.com/2018/12/01/使用Atlas进行元数据管理之容错和高可用/index.html">
+<meta property="og:url" content="http://mantoudev.com/2018/12/01/使用Atlas进行元数据管理之容错与高可用/index.html">
 <meta property="og:site_name" content="MantouDev">
-<meta property="og:description" content="1. 介绍Apache Atlas使用各种系统并与之交互，为数据管理员提供元数据管理和数据血缘信息。通过适当地选择和配置这些依赖关系，可以使用Atlas实现高度的服务可用性。本文档介绍了Atlas中的高可用性支持状态，包括其功能和当前限制，以及实现此高级别可用性所需的配置。">
+<meta property="og:description" content="1. 介绍Apache Atlas使用各种系统并与之交互，为数据管理员提供元数据管理和数据血缘信息。通过适当地选择和配置这些依赖关系，可以使用Atlas实现服务的高可用性。本文档介绍了Atlas中的高可用性支持状态，包括其功能和当前限制，以及实现此高级别可用性所需的配置。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-12-02T09:35:19.956Z">
+<meta property="og:updated_time" content="2018-12-02T10:12:32.616Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用Atlas进行元数据管理之容错与高可用">
-<meta name="twitter:description" content="1. 介绍Apache Atlas使用各种系统并与之交互，为数据管理员提供元数据管理和数据血缘信息。通过适当地选择和配置这些依赖关系，可以使用Atlas实现高度的服务可用性。本文档介绍了Atlas中的高可用性支持状态，包括其功能和当前限制，以及实现此高级别可用性所需的配置。">
+<meta name="twitter:description" content="1. 介绍Apache Atlas使用各种系统并与之交互，为数据管理员提供元数据管理和数据血缘信息。通过适当地选择和配置这些依赖关系，可以使用Atlas实现服务的高可用性。本文档介绍了Atlas中的高可用性支持状态，包括其功能和当前限制，以及实现此高级别可用性所需的配置。">
 
 
 
@@ -120,7 +120,7 @@
 
 
 
-  <link rel="canonical" href="http://mantoudev.com/2018/12/01/使用Atlas进行元数据管理之容错和高可用/">
+  <link rel="canonical" href="http://mantoudev.com/2018/12/01/使用Atlas进行元数据管理之容错与高可用/">
 
 
 
@@ -304,7 +304,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://mantoudev.com/2018/12/01/使用Atlas进行元数据管理之容错和高可用/">
+    <link itemprop="mainEntityOfPage" href="http://mantoudev.com/2018/12/01/使用Atlas进行元数据管理之容错与高可用/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Mantou">
@@ -384,7 +384,7 @@
 
           
           
-             <span id="/2018/12/01/使用Atlas进行元数据管理之容错和高可用/" class="leancloud_visitors" data-flag-title="使用Atlas进行元数据管理之容错与高可用">
+             <span id="/2018/12/01/使用Atlas进行元数据管理之容错与高可用/" class="leancloud_visitors" data-flag-title="使用Atlas进行元数据管理之容错与高可用">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -446,10 +446,10 @@
       
 
       
-        <h2 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1. 介绍"></a>1. 介绍</h2><p>Apache Atlas使用各种系统并与之交互，为数据管理员提供元数据管理和数据血缘信息。通过适当地选择和配置这些依赖关系，可以使用Atlas实现高度的服务可用性。本文档介绍了Atlas中的高可用性支持状态，包括其功能和当前限制，以及实现此高级别可用性所需的配置。<br><a id="more"></a></p>
-<p>在高级架构章节(请参阅我翻译的<a href="https://mantoudev.com/2018/11/29/Atlas%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/">《Atlas开发指南(中文版)》</a>)概述了构成Atlas的各种组件。下面提到的各种组件的选项从上面的页面中获取上下文，在继续阅读本页之前值得一看。</p>
+        <h2 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1. 介绍"></a>1. 介绍</h2><p>Apache Atlas使用各种系统并与之交互，为数据管理员提供元数据管理和数据血缘信息。通过适当地选择和配置这些依赖关系，可以使用Atlas实现服务的高可用性。本文档介绍了Atlas中的高可用性支持状态，包括其功能和当前限制，以及实现此高级别可用性所需的配置。<br><a id="more"></a></p>
+<p>在Atlas文档<code>高级架构</code>章节(请参阅我翻译的《Atlas开发指南(中文版)》)概述了构成Atlas的各种组件。下面提到的各种组件的选项，都是基于上述文档中的架构描述，在继续阅读本文之前推荐先行阅读文档中相关章节。</p>
 <h2 id="2-Atlas-Web-Service"><a href="#2-Atlas-Web-Service" class="headerlink" title="2. Atlas Web Service"></a>2. Atlas Web Service</h2><p>目前，Atlas Web Service有一个限制，即它一次只能有一个活动实例。在早期版本的Atlas中，可以配置备份实例并使其可用。但是，需要手动故障转移才能使此备份实例处于活动状态。</p>
-<p>从此版本开始，Atlas将通过自动故障转移支持活动(active)/被动(passive)配置中的多个Atlas Web服务实例。这意味着用户可以同时在不同的物理主机上部署和启动Atlas Web Service的多个实例。其中一个实例将自动选为“active”实例以服务用户请求。其他人将自动被视为“passive”。如果“active”实例因故意停止或由于意外故障而变得不可用，则其他实例之一将自动被选为“active”实例并开始为用户请求提供服务。</p>
+<p>从此版本开始，Atlas将通过自动故障转移支持活动(active)/被动(passive)配置中的多个Atlas Web服务实例。这意味着用户可以同时在不同的物理主机上部署和启动Atlas Web Service的多个实例。其中一个实例将自动选为“active”实例以服务用户请求。其他实例将自动被视为“passive”。如果“active”实例因故意停止或由于意外故障而变得不可用，则其他实例之一将自动被选为“active”实例并开始为用户请求提供服务。</p>
 <p>“active”实例是唯一可以正确响应用户请求的实例。它可以创建，删除，修改或响应元数据对象上的查询。 “passive”实例将接受用户请求，但会使用HTTP重定向将其重定向到当前已知的“active”实例。具体而言，passive实例本身不会响应对元数据对象的任何查询。但是，所有实例（active和passive）都将响应返回有关该实例的信息的管理请求。</p>
 <p>在高可用性模式下配置时，用户可以获得以下操作收益：</p>
 <ul>
@@ -552,12 +552,12 @@
 <ul>
 <li>ATLAS主题的分区数应设置为1（numPartitions）</li>
 <li>确定Kafka主题的副本数量：将此设置为至少2以实现冗余。</li>
-<li>运行以下命令：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper &lt;list of zookeeper host:port entries&gt; --topic ATLAS_HOOK --replication-factor &lt;numReplicas&gt; --partitions 1</span><br><span class="line">      $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper &lt;list of zookeeper host:port entries&gt; --topic ATLAS_ENTITIES --replication-factor &lt;numReplicas&gt; --partitions 1</span><br><span class="line">      Here KAFKA_HOME points to the Kafka installation directory.</span><br></pre></td></tr></table></figure>
+<li>运行以下命令：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper &lt;list of zookeeper host:port entries&gt; --topic ATLAS_HOOK --replication-factor &lt;numReplicas&gt; --partitions 1</span><br><span class="line">$KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper &lt;list of zookeeper host:port entries&gt; --topic ATLAS_ENTITIES --replication-factor &lt;numReplicas&gt; --partitions 1</span><br><span class="line">Here KAFKA_HOME points to the Kafka installation directory.</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 </li>
 </ul>
-<p>在<code>atlas-application.properties</code>中，设置以下配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">atlas.notification.embedded=false</span><br><span class="line">    atlas.kafka.zookeeper.connect=&lt;comma separated list of servers forming Zookeeper quorum used by Kafka&gt;</span><br><span class="line">    atlas.kafka.bootstrap.servers=&lt;comma separated list of Kafka broker endpoints in host:port form&gt; - Give at least 2 for redundancy.</span><br></pre></td></tr></table></figure></p>
+<p>在<code>atlas-application.properties</code>中，设置以下配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">atlas.notification.embedded=false</span><br><span class="line">atlas.kafka.zookeeper.connect=&lt;comma separated list of servers forming Zookeeper quorum used by Kafka&gt;</span><br><span class="line">atlas.kafka.bootstrap.servers=&lt;comma separated list of Kafka broker endpoints in host:port form&gt; - Give at least 2 for redundancy.</span><br></pre></td></tr></table></figure></p>
 <h2 id="6-问题"><a href="#6-问题" class="headerlink" title="6. 问题"></a>6. 问题</h2><p>如果托管Atlas表的HBase region servers挂掉，Atlas将无法存储或检索HBase中的元数据，直到它们重新联机。</p>
 
       
@@ -577,8 +577,8 @@
   <script src="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.min.js"></script>
   <link rel="stylesheet" type="text/css" href="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.mini.css">
   <p><span>文章作者:</span><a href="/" title="访问 Mantou 的个人博客">Mantou</a></p>
-  <p><span>最后更新:</span>2018年12月02日 17:12:19</p>
-  <p><span>原始链接:</span><a href="/2018/12/01/使用Atlas进行元数据管理之容错和高可用/" title="使用Atlas进行元数据管理之容错与高可用">http://mantoudev.com/2018/12/01/使用Atlas进行元数据管理之容错和高可用/</a></p>
+  <p><span>最后更新:</span>2018年12月02日 18:12:32</p>
+  <p><span>原始链接:</span><a href="/2018/12/01/使用Atlas进行元数据管理之容错与高可用/" title="使用Atlas进行元数据管理之容错与高可用">http://mantoudev.com/2018/12/01/使用Atlas进行元数据管理之容错与高可用/</a></p>
   <p><span>版权声明:</span>本博客所有文章除特别声明外，均采用 <i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank" title="Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)"> BY-NC-SA 3.0 许可协议</a>，转载请注明出处！</p>
 </div>
 
