@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="元数据管理,atlas,血缘,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1. 介绍Apache Atlas使用各种系统并与之交互，为数据管理员提供元数据管理和数据血缘信息。通过适当地选择和配置这些依赖关系，可以使用Atlas实现服务的高可用性。本文档介绍了Atlas中的高可用性支持状态，包括其功能和当前限制，以及实现此高级别可用性所需的配置。">
+<meta name="keywords" content="元数据管理,atlas,血缘">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Atlas进行元数据管理之容错与高可用">
+<meta property="og:url" content="http://mantoudev.com/使用Atlas进行元数据管理之容错与高可用/index.html">
+<meta property="og:site_name" content="MantouDev">
+<meta property="og:description" content="1. 介绍Apache Atlas使用各种系统并与之交互，为数据管理员提供元数据管理和数据血缘信息。通过适当地选择和配置这些依赖关系，可以使用Atlas实现服务的高可用性。本文档介绍了Atlas中的高可用性支持状态，包括其功能和当前限制，以及实现此高级别可用性所需的配置。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-12-02T10:12:32.616Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用Atlas进行元数据管理之容错与高可用">
+<meta name="twitter:description" content="1. 介绍Apache Atlas使用各种系统并与之交互，为数据管理员提供元数据管理和数据血缘信息。通过适当地选择和配置这些依赖关系，可以使用Atlas实现服务的高可用性。本文档介绍了Atlas中的高可用性支持状态，包括其功能和当前限制，以及实现此高级别可用性所需的配置。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://mantoudev.com/使用Atlas进行元数据管理之容错与高可用/">
+
+
+
+
+
+  <title>使用Atlas进行元数据管理之容错与高可用 | MantouDev</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-129870378-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">MantouDev</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">🐈 👀</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://mantoudev.com/使用Atlas进行元数据管理之容错与高可用/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mantou">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MantouDev">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用Atlas进行元数据管理之容错与高可用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-01T12:19:40+08:00">
+                2018-12-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/BigData/" itemprop="url" rel="index">
+                    <span itemprop="name">BigData</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/BigData/元数据管理/" itemprop="url" rel="index">
+                    <span itemprop="name">元数据管理</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/使用Atlas进行元数据管理之容错与高可用/" class="leancloud_visitors" data-flag-title="使用Atlas进行元数据管理之容错与高可用">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  12
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1. 介绍"></a>1. 介绍</h2><p>Apache Atlas使用各种系统并与之交互，为数据管理员提供元数据管理和数据血缘信息。通过适当地选择和配置这些依赖关系，可以使用Atlas实现服务的高可用性。本文档介绍了Atlas中的高可用性支持状态，包括其功能和当前限制，以及实现此高级别可用性所需的配置。<br><a id="more"></a></p>
+<p>在Atlas文档<code>高级架构</code>章节(请参阅我翻译的《Atlas开发指南(中文版)》)概述了构成Atlas的各种组件。下面提到的各种组件的选项，都是基于上述文档中的架构描述，在继续阅读本文之前推荐先行阅读文档中相关章节。</p>
+<h2 id="2-Atlas-Web-Service"><a href="#2-Atlas-Web-Service" class="headerlink" title="2. Atlas Web Service"></a>2. Atlas Web Service</h2><p>目前，Atlas Web Service有一个限制，即它一次只能有一个活动实例。在早期版本的Atlas中，可以配置备份实例并使其可用。但是，需要手动故障转移才能使此备份实例处于活动状态。</p>
+<p>从此版本开始，Atlas将通过自动故障转移支持活动(active)/被动(passive)配置中的多个Atlas Web服务实例。这意味着用户可以同时在不同的物理主机上部署和启动Atlas Web Service的多个实例。其中一个实例将自动选为“active”实例以服务用户请求。其他实例将自动被视为“passive”。如果“active”实例因故意停止或由于意外故障而变得不可用，则其他实例之一将自动被选为“active”实例并开始为用户请求提供服务。</p>
+<p>“active”实例是唯一可以正确响应用户请求的实例。它可以创建，删除，修改或响应元数据对象上的查询。 “passive”实例将接受用户请求，但会使用HTTP重定向将其重定向到当前已知的“active”实例。具体而言，passive实例本身不会响应对元数据对象的任何查询。但是，所有实例（active和passive）都将响应返回有关该实例的信息的管理请求。</p>
+<p>在高可用性模式下配置时，用户可以获得以下操作收益：</p>
+<ul>
+<li><strong>维护间隔期间不间断的服务</strong>：如果需要关闭Atlas Web Service的活动实例以进行维护，则另一个实例将自动变为活动状态并可以为请求提供服务。</li>
+<li><strong>意外故障时的不间断服务</strong>：如果Atlas Web Service的活动实例因软件或硬件错误而失败，则另一个实例将自动变为活动状态并可以为请求提供服务。</li>
+</ul>
+<p>在以下小节中，我们将介绍为Atlas Web Service设置高可用性所需的步骤。我们还描述了如何设计部署和客户端以利用此功能。最后，我们描述了底层实现的一些细节。</p>
+<h3 id="2-1-在Atlas中设置高可用性功能"><a href="#2-1-在Atlas中设置高可用性功能" class="headerlink" title="2.1 在Atlas中设置高可用性功能"></a>2.1 在Atlas中设置高可用性功能</h3><p>设置高可用性功能必须满足以下先决条件。</p>
+<ul>
+<li>确保在一组计算机上安装Apache Zookeeper（建议至少使用3台服务器进行生产）。</li>
+<li>选择2个或更多物理计算机以运行Atlas Web Service实例。这些机器定义了我们称之为Atlas的“服务器集合”。</li>
+</ul>
+<p>要在Atlas中设置高可用性，必须在<code>atlas-application.properties</code>文件中定义一些配置选项。虽然在配置页面中定义了完整的配置项列表，但本节列出了一些主要选项。</p>
+<ul>
+<li>高可用性是Atlas中的可选功能。因此，必须通过将配置选项<code>atlas.server.ha.enabled</code>设置为<code>true</code>来启用它。</li>
+<li>接下来，定义标识符列表，每个物理机一个用于Atlas Web Service实例。这些标识符可以是简单的字符串，如id1，id2等。它们应该是唯一的，不应包含逗号。</li>
+<li>将这些标识符的逗号分隔列表定义为选项<code>atlas.server.ids</code>的值。</li>
+<li><p>对于每台物理计算机，将IP地址/主机名和端口列为配置<code>atlas.server.address.id</code>的值，其中id表示此物理计算机的标识符字符串。</p>
+<ul>
+<li>例如，如果您选择了2台主机名为<code>host1.company.com</code>和<code>host2.company.com</code>的计算机，则可以按如下方式定义配置选项：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">atlas.server.ids=id1,id2</span><br><span class="line">atlas.server.address.id1=host1.company.com:21000</span><br><span class="line">atlas.server.address.id2=host2.company.com:21000</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>定义将由Atlas高可用性功能使用的Zookeeper集群。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">atlas.server.ha.zookeeper.connect=zk1.company.com:2181,zk2.company.com:2181,zk3.company.com:2181</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>您可以查看为高可用性功能定义的其他配置选项，并根据需要在atlas-application.properties文件中进行设置。</p>
+</li>
+<li>对于生产环境，还必须在高可用性模式下设置Atlas所依赖的组件。这将在以下部分中详细介绍。按照这些说明设置和配置它们。</li>
+<li>在所选物理计算机上安装Atlas软件。</li>
+<li>将使用上述步骤创建的atlas-application.properties文件复制到所有计算机的配置目录中。</li>
+<li>启动从属组件。</li>
+<li>启动Atlas Web Service的每个实例。</li>
+</ul>
+<p>要验证高可用性是否正常，请在安装了Atlas Web Service的每个实例上运行以下脚本。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ATLAS_HOME/bin/atlas_admin.py -status</span><br></pre></td></tr></table></figure></p>
+<p>此脚本可以打印以下值之一作为响应：</p>
+<ul>
+<li><strong>ACTIVE</strong>：此实例处于活动状态，可以响应用户请求。</li>
+<li><strong>PASSIVE</strong>：这个实例是被动的。它会将收到的任何用户请求重定向到当前活动实例。</li>
+<li><strong>BECOMING_ACTIVE</strong>：如果服务器正在转换为ACTIVE实例，则会打印出来。服务器无法在此状态下为任何元数据用户请求提供服务。</li>
+<li><strong>BECOMING_PASSIVE</strong>：如果服务器正在转换为PASSIVE实例，则会打印出来。服务器无法在此状态下为任何元数据用户请求提供服务。</li>
+</ul>
+<p>在正常操作情况下，这些实例中只有一个应该打印值ACTIVE作为对脚本的响应，而其他实例将打印PASSIVE。</p>
+<h3 id="2-2-配置客户端以使用高可用性功能"><a href="#2-2-配置客户端以使用高可用性功能" class="headerlink" title="2.2 配置客户端以使用高可用性功能"></a>2.2 配置客户端以使用高可用性功能</h3><p>可以通过两种方式访问​​Atlas Web Service：</p>
+<ul>
+<li><strong>使用Atlas Web UI</strong>：这是一个基于浏览器的客户端，可用于查询存储在Atlas中的元数据。</li>
+<li><strong>使用Atlas REST API</strong>：由于Atlas公开了RESTful API，因此可以使用任何标准REST客户端，包括其他应用程序中的库。实际上，Atlas附带了一个名为AtlasClient的客户端，可以作为构建REST客户端访问的示例。</li>
+</ul>
+<p>为了利用客户端中的高可用性功能，有两种选择。</p>
+<h4 id="1-使用中间代理"><a href="#1-使用中间代理" class="headerlink" title="(1)使用中间代理"></a>(1)使用中间代理</h4><p>实现对Atlas的高可用性访问的最简单的解决方案是安装和配置一些中间代理，该代理具有基于状态透明地切换服务的能力。一个这样的代理解决方案是<a href="http://www.haproxy.org/" target="_blank" rel="noopener">HAProxy</a>。</p>
+<p>以下是可以使用的示例HAProxy配置。请注意，此提供仅用于说明，而不是推荐的生产配置。请参阅HAProxy文档以获取适当的说明。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">frontend atlas_fe</span><br><span class="line">  bind *:41000</span><br><span class="line">  default_backend atlas_be</span><br><span class="line"></span><br><span class="line">backend atlas_be</span><br><span class="line">  mode http</span><br><span class="line">  option httpchk get /api/atlas/admin/status</span><br><span class="line">  http-check expect string ACTIVE</span><br><span class="line">  balance roundrobin</span><br><span class="line">  server host1_21000 host1:21000 check</span><br><span class="line">  server host2_21000 host2:21000 check backup</span><br><span class="line"></span><br><span class="line">listen atlas</span><br><span class="line">  bind localhost:42000</span><br></pre></td></tr></table></figure></p>
+<p>上面的配置绑定HAProxy以监听端口41000以获取传入的客户端连接。然后，它会根据HTTP状态检查将连接路由到主机host1或host2。状态检查是使用REST URL <code>/api/atlas/admin/status</code>上的HTTP GET完成的，仅当HTTP响应包含字符串ACTIVE时才被视为成功。</p>
+<h4 id="2-使用活动实例自动检测"><a href="#2-使用活动实例自动检测" class="headerlink" title="(2)使用活动实例自动检测"></a>(2)使用活动实例自动检测</h4><p>如果不想设置和管理单独的代理，则使用高可用性功能的另一个选项，是构建能够检测状态和重试操作的客户端应用程序。在这样的设置中，可以使用形成整体的所有Atlas Web Service实例的URL启动客户端应用程序。然后，客户端应在每个上面调用REST <code>URL/api/atlas/admin/status</code>以确定哪个是活动实例。 Active实例的响应形式为<code>{Status：ACTIVE}</code>。此外，当客户端在操作过程中面临任何异常时，它应该再次确定哪些剩余URL处于活动状态并重试该操作。</p>
+<p>Atlas附带的AtlasClient类可用作示例客户端库，该库实现处理集合并选择正确的Active Server实例的逻辑。</p>
+<p>Atlas中的实用程序（如<code>quick_start.py</code>和<code>import-hive.sh</code>）可以配置为与多个服务器URL一起运行。在此模式下启动时，AtlasClient会自动选择并使用当前活动实例。如果在两者之间设置了代理，则在运行<code>quick_start.py</code>或<code>import-hive.sh</code>时可以使用其地址。</p>
+<h3 id="2-3-Atlas高可用性的实现细节"><a href="#2-3-Atlas高可用性的实现细节" class="headerlink" title="2.3 Atlas高可用性的实现细节"></a>2.3 Atlas高可用性的实现细节</h3><p>Atlas高可用性工作在主JIRA <a href="https://issues.apache.org/jira/browse/ATLAS-510" target="_blank" rel="noopener">ATLAS-510</a>下进行跟踪。在其下提交的JIRA提供了有关如何实施高可用性功能的详细信息。在高层次上，可以调出以下几点：</p>
+<ul>
+<li>自动选择Active实例，以及通过领导者选举算法自动故障转移到新的Active实例。</li>
+<li>对于领导者选举，我们使用<a href="http://curator.apache.org/curator-recipes/leader-latch.html" target="_blank" rel="noopener">Leader Latch Recipe</a> of <a href="http://curator.apache.org/" target="_blank" rel="noopener">Apache Curator</a>。</li>
+<li>Active实例是唯一一个在后端存储中初始化，修改或读取状态以保持一致的实例。</li>
+<li>此外，当实例被选为活动时，它会刷新来自后端存储的任何缓存信息以获取最新信息。</li>
+<li>servlet过滤器确保只有活动实例服务用户请求。如果被动实例接收到这些请求，它会自动将它们重定向到当前活动实例。</li>
+</ul>
+<h2 id="3-元数据存储"><a href="#3-元数据存储" class="headerlink" title="3. 元数据存储"></a>3. 元数据存储</h2><p>Atlas使用JanusGraph存储和管理元数据。默认情况下，Atlas使用独立的HBase实例作为JanusGraph的底层存储。为了为元数据存储提供HA，我们建议将Atlas配置为使用分布式HBase作为JanusGraph的底层存储。要将Atlas配置为在HA模式下使用HBase，请执行以下操作：</p>
+<ul>
+<li>选择在HA模式下设置的现有HBase群集，以在Atlas（OR）中进行配置在HA模式下设置新的HBase群集。<ul>
+<li>如果为Atlas设置HBase，请按照Atlas官网“<a href="https://atlas.apache.org/InstallationSteps.html" target="_blank" rel="noopener">Installation Steps</a>”，列出的HBase的相关设置说明进行操作。</li>
+</ul>
+</li>
+<li>建议在使用Zookeeper进行协调的不同物理主机上的群集中使用多个HBase主服务器（至少2个），以提供HBase的冗余和高可用性。</li>
+<li>有关在<code>atlas.properties</code>中配置以使用HBase设置Atlas的选项，请参阅我翻译的<a href="https://mantoudev.com/2018/11/29/Atlas%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/">《Atlas开发指南(中文版)》</a>中“配置”章节。</li>
+</ul>
+<h2 id="4-索引存储"><a href="#4-索引存储" class="headerlink" title="4. 索引存储"></a>4. 索引存储</h2><p>如上所述，Atlas通过JanusGraph索引元数据以支持全文搜索查询。为了给索引存储提供HA，我们建议将Atlas配置为使用<code>Solr</code>或<code>Elasticsearch</code>作为JanusGraph的索引存储支撑。</p>
+<h3 id="4-1-Solr"><a href="#4-1-Solr" class="headerlink" title="4.1 Solr"></a>4.1 Solr</h3><p>要将Atlas配置为在HA模式下使用Solr，请执行以下操作：</p>
+<ul>
+<li>选择HA模式下的现有SolrCloud群集设置以在Atlas中配置（OR）设置新的SolrCloud群集。<ul>
+<li>确保Solr在至少2个物理主机上启用以实现冗余，并且每个主机都运行Solr节点。</li>
+<li>建议将冗余数量设置为至少2个副本。</li>
+</ul>
+</li>
+<li>创建Atlas所需的SolrCloud集合，详见Atlas官网“<a href="https://atlas.apache.org/InstallationSteps.html" target="_blank" rel="noopener">Installation Steps</a>”。</li>
+<li>有关在atlas.properties中配置以使用Solr设置Atlas的选项，请参阅我翻译的<a href="https://mantoudev.com/2018/11/29/Atlas%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/">《Atlas开发指南(中文版)》</a>的文档中“配置”章节。</li>
+</ul>
+<h3 id="4-2-Elasticsearch"><a href="#4-2-Elasticsearch" class="headerlink" title="4.2 Elasticsearch"></a>4.2 Elasticsearch</h3><p>要将Atlas配置为在HA模式下使用Elasticsearch，请执行以下操作：</p>
+<ul>
+<li>选择现有的Elasticsearch集群设置，（或）设置新的集群Elasticsearch集群。</li>
+<li>确保Elasticsearch在至少五个物理主机上启用以实现冗余。</li>
+<li>建议设置分片数量为3</li>
+<li>有关在atlas.properties中配置以使用Elasticsearch设置Atlas的选项，请参阅我翻译的<a href="https://mantoudev.com/2018/11/29/Atlas%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/">《Atlas开发指南(中文版)》</a>的文档中“配置”章节。</li>
+</ul>
+<h2 id="5-通知服务"><a href="#5-通知服务" class="headerlink" title="5. 通知服务"></a>5. 通知服务</h2><p>来自Hook的元数据通知事件通过写入名为<code>ATLAS_HOOK</code>的Kafka Topic发送到Atlas。同样，从Atlas到其他集成组件（如Ranger）的事件也会写入名为<code>ATLAS_ENTITIES</code>的Kafka Topic。由于Kafka持久化这些消息，即使消费者因发送事件而关闭，事件也不会丢失。此外，我们建议Kafka也设置容错，以便它具有更高的可用性保证。要将Atlas配置为在HA模式下使用Kafka，请执行以下操作：</p>
+<ul>
+<li>选择在HA模式下设置的现有Kafka群集，以在Atlas（OR）中配置设置新的Kafka群集。</li>
+<li><p>建议群集中不同的Kafka代理在不同的物理主机上使用Zookeeper进行协调，以提供Kafka的冗余和高可用性。</p>
+<ul>
+<li>设置至少2个物理主机以实现冗余，每个主机托管一个Kafka代理。</li>
+</ul>
+</li>
+<li><p>为Atlas使用设置Kafka主题：</p>
+<ul>
+<li>ATLAS主题的分区数应设置为1（numPartitions）</li>
+<li>确定Kafka主题的副本数量：将此设置为至少2以实现冗余。</li>
+<li>运行以下命令：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper &lt;list of zookeeper host:port entries&gt; --topic ATLAS_HOOK --replication-factor &lt;numReplicas&gt; --partitions 1</span><br><span class="line">$KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper &lt;list of zookeeper host:port entries&gt; --topic ATLAS_ENTITIES --replication-factor &lt;numReplicas&gt; --partitions 1</span><br><span class="line">Here KAFKA_HOME points to the Kafka installation directory.</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<p>在<code>atlas-application.properties</code>中，设置以下配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">atlas.notification.embedded=false</span><br><span class="line">atlas.kafka.zookeeper.connect=&lt;comma separated list of servers forming Zookeeper quorum used by Kafka&gt;</span><br><span class="line">atlas.kafka.bootstrap.servers=&lt;comma separated list of Kafka broker endpoints in host:port form&gt; - Give at least 2 for redundancy.</span><br></pre></td></tr></table></figure></p>
+<h2 id="6-问题"><a href="#6-问题" class="headerlink" title="6. 问题"></a>6. 问题</h2><p>如果托管Atlas表的HBase region servers挂掉，Atlas将无法存储或检索HBase中的元数据，直到它们重新联机。</p>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script type="text/javascript" src="http://jslibs.wuxubj.cn/sweetalert_mini/jquery-1.7.1.min.js"></script>
+  <script src="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.mini.css">
+  <p><span>文章作者:</span><a href="/" title="访问 Mantou 的个人博客">Mantou</a></p>
+  <p><span>最后更新:</span>2018年12月02日 18:12:32</p>
+  <p><span>原始链接:</span><a href="/使用Atlas进行元数据管理之容错与高可用/" title="使用Atlas进行元数据管理之容错与高可用">http://mantoudev.com/使用Atlas进行元数据管理之容错与高可用/</a></p>
+  <p><span>版权声明:</span>本博客所有文章除特别声明外，均采用 <i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank" title="Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)"> BY-NC-SA 3.0 许可协议</a>，转载请注明出处！</p>
+</div>
+
+
+      
+    </div>
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>谢谢老板~</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Mantou 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Mantou 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/元数据管理/" rel="tag"># 元数据管理</a>
+          
+            <a href="/tags/atlas/" rel="tag"># atlas</a>
+          
+            <a href="/tags/血缘/" rel="tag"># 血缘</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/使用Atlas进行元数据管理之Glossary(术语)/" rel="next" title="使用Atlas进行元数据管理之Glossary(术语)">
+                <i class="fa fa-chevron-left"></i> 使用Atlas进行元数据管理之Glossary(术语)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/Atlas开发指南(中文版)/" rel="prev" title="Atlas开发指南(中文版)">
+                Atlas开发指南(中文版) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+  <div id="gitalk-container"></div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Mantou">
+            
+              <p class="site-author-name" itemprop="name">Mantou</p>
+              <p class="site-description motion-element" itemprop="description">吭哧吭哧👨‍💻‍</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/mantoudev" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:mantoudev@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-介绍"><span class="nav-text">1. 介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Atlas-Web-Service"><span class="nav-text">2. Atlas Web Service</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-在Atlas中设置高可用性功能"><span class="nav-text">2.1 在Atlas中设置高可用性功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-配置客户端以使用高可用性功能"><span class="nav-text">2.2 配置客户端以使用高可用性功能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-使用中间代理"><span class="nav-text">(1)使用中间代理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-使用活动实例自动检测"><span class="nav-text">(2)使用活动实例自动检测</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-Atlas高可用性的实现细节"><span class="nav-text">2.3 Atlas高可用性的实现细节</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-元数据存储"><span class="nav-text">3. 元数据存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-索引存储"><span class="nav-text">4. 索引存储</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-Solr"><span class="nav-text">4.1 Solr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-Elasticsearch"><span class="nav-text">4.2 Elasticsearch</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-通知服务"><span class="nav-text">5. 通知服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-问题"><span class="nav-text">6. 问题</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mantou</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">38.4k</span>
+  
+</div>
+
+
+<!--<div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>-->
+
+
+
+  <!--<span class="post-meta-divider">|</span>-->
+
+
+
+  <!--<div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>-->
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="/js/src/md5.js"></script>
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+		var gitalk = new Gitalk({
+		  clientID: '166772c775bb840c4d30',
+		  clientSecret: '705cf1b571902b10c6e103604a718ff2ee1dd108',
+		  repo: 'blog-comments',
+		  owner: 'mantoudev',
+		  admin: ['mantoudev'],
+		  id: md5(location.pathname),
+		  distractionFreeMode: 'true'
+		})
+		gitalk.render('gitalk-container')
+       </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("1ksH739lNLQGmPbiKV7caYHV-gzGzoHsz", "kgyOnl48BVfVTzUF8NaU6gFY");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
